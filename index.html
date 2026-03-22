@@ -568,6 +568,116 @@
     .s-failed    { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
     .outcome-pill { background: #f1f5f9; color: #334155; border-radius: 6px; padding: 3px 10px; font-size: 12px; font-weight: 500; display: inline-block; white-space: nowrap; }
     .qs-dash { color: #e2e8f0; font-size: 15px; }
+
+  /* ════════════════════════════════
+     MOBILE RESPONSIVE
+  ════════════════════════════════ */
+
+  @media (max-width: 768px) {
+
+    /* ── Shell & Nav ── */
+    .page-body { padding: 16px 14px 48px; }
+    .app-topbar { padding: 0 16px; }
+    .topbar-nav { display: none; }
+    .topbar-org { display: none; }
+    .brand-name { font-size: 14px; }
+
+    /* ── Tab bar ── */
+    .tab-bar { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .tab-btn { padding: 10px 14px; font-size: 12px; white-space: nowrap; }
+
+    /* ══ TAB 1 — DEPLOY ══ */
+    .t1-outer { padding-top: 16px; }
+    .modal { width: 100%; border-radius: 10px; }
+    .modal-header { padding: 16px 16px 14px; }
+    .header-icon { width: 36px; height: 36px; border-radius: 8px; }
+    .header-title { font-size: 14px; }
+    .header-sub { font-size: 11.5px; }
+    .section { padding: 16px; }
+    .section-title { font-size: 12px; }
+    .agent-wrap input { font-size: 13px; }
+    .retry-toggle-row { gap: 8px; }
+    .count-row { gap: 6px; }
+    .count-pill { width: 36px; height: 36px; font-size: 13px; }
+    .retry-card { padding: 14px; }
+    .int-row { flex-wrap: wrap; gap: 6px; }
+    .int-num { width: 70px; }
+    .int-after { font-size: 11.5px; }
+    .modal-footer { padding: 14px 16px; }
+    .btn-start { font-size: 13px; padding: 11px 20px; }
+    .step-row { gap: 10px; }
+
+    /* ══ TAB 2 — REPORT ══ */
+    .report-page { border-radius: 10px; margin-top: 16px; }
+
+    /* Header */
+    .rpt-header { padding: 14px 16px 12px; flex-direction: column; align-items: flex-start; gap: 10px; }
+    .rpt-title { font-size: 14px; }
+    .rpt-header-actions { width: 100%; justify-content: flex-end; }
+
+    /* Stat cards — 2 per row */
+    .stat-cards-row { padding: 14px 14px; gap: 10px; }
+    .stat-card { min-width: calc(50% - 5px); flex: 1 1 calc(50% - 5px); padding: 14px 14px; }
+    .stat-card-val { font-size: 24px; }
+
+    /* Section cards */
+    .section-card { border-radius: 10px; margin-bottom: 14px; }
+    .section-card-header { padding: 12px 16px; }
+
+    /* Campaign Funnel — stack vertically */
+    .funnel-section { padding: 16px 14px 18px; }
+    .fk-wrap { flex-direction: column; align-items: stretch; gap: 12px; }
+    .fk-src { align-self: stretch; }
+    .fk-src-card { flex-direction: row; align-items: center; border-radius: 12px; padding: 16px 18px; }
+    .fk-src-icon { margin: 0 0 0 auto; }
+    .fk-src-num { font-size: 34px; }
+    .fk-main-svg { display: none; }
+    .fk-lanes { flex: unset; display: flex; flex-direction: column; gap: 10px; }
+    .fk-lane { display: flex; flex-direction: column; gap: 8px; }
+    .fk-card { flex: unset; padding: 14px 16px; border-radius: 10px; }
+    .fk-num { font-size: 30px; }
+    .fk-arr-svg { display: none; }
+    .fk-mini-svg { display: none; }
+    .fk-retry-stack { flex: unset; gap: 8px; }
+    .fk-retry { padding: 12px 14px; }
+    .fk-retry-num { font-size: 24px; }
+
+    /* Performance overview — horizontal scroll */
+    .metrics-section { padding: 16px 14px 18px; }
+    .stat-strip { overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 8px; }
+    .ss-stat { min-width: 140px; padding: 14px 14px; }
+    .ss-value { font-size: 18px; }
+
+    /* Contacts table toolbar */
+    .calls-toolbar { padding: 12px 14px; gap: 8px; }
+    .search-box { min-width: 0; flex: 1 1 100%; order: -1; }
+    .filter-dropdown { flex: 1; }
+    .filter-btn { width: 100%; justify-content: space-between; }
+    .filter-menu { min-width: 100%; }
+    .btn-download { white-space: nowrap; }
+
+    /* Contacts table — horizontal scroll */
+    .calls-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .calls-table { min-width: 600px; }
+    .calls-table th, .calls-table td { padding: 10px 12px; }
+    .calls-table th:first-child, .calls-table td:first-child { padding-left: 14px; }
+    .calls-table th:last-child,  .calls-table td:last-child  { padding-right: 14px; }
+    .cust-name { font-size: 12.5px; }
+    .cust-phone { font-size: 11px; }
+    .timeline-wrap { padding: 16px 14px 18px 14px; }
+
+    /* Transcript modal */
+    .tr-modal { width: 100% !important; max-width: 100% !important; border-radius: 14px 14px 0 0; margin-top: auto; max-height: 85vh; }
+    .tr-overlay { align-items: flex-end; }
+  }
+
+  @media (max-width: 480px) {
+    .stat-card { min-width: 100%; flex: 1 1 100%; }
+    .rpt-title { font-size: 13px; }
+    .fk-src-num { font-size: 28px; }
+    .ss-stat { min-width: 120px; }
+  }
+
   </style>
 </head>
 <body>
@@ -954,6 +1064,7 @@
     </button>
   </div>
 
+  <div class="calls-table-wrap">
   <table class="calls-table">
     <thead>
       <tr>
@@ -1470,6 +1581,7 @@
 
     </tbody>
   </table>
+  </div><!-- /calls-table-wrap -->
   </div><!-- /section-card Contacts Overview -->
 
 </div>
