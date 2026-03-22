@@ -624,23 +624,12 @@
     .section-card { border-radius: 10px; margin-bottom: 14px; }
     .section-card-header { padding: 12px 16px; }
 
-    /* Campaign Funnel — stack vertically */
-    .funnel-section { padding: 16px 14px 18px; }
-    .fk-wrap { flex-direction: column; align-items: stretch; gap: 12px; }
-    .fk-src { align-self: stretch; }
-    .fk-src-card { flex-direction: row; align-items: center; border-radius: 12px; padding: 16px 18px; }
-    .fk-src-icon { margin: 0 0 0 auto; }
+    /* Campaign Funnel — horizontal scroll */
+    .funnel-section { padding: 16px 0 18px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .fk-wrap { min-width: 640px; padding: 0 14px; }
     .fk-src-num { font-size: 34px; }
-    .fk-main-svg { display: none; }
-    .fk-lanes { flex: unset; display: flex; flex-direction: column; gap: 10px; }
-    .fk-lane { display: flex; flex-direction: column; gap: 8px; }
-    .fk-card { flex: unset; padding: 14px 16px; border-radius: 10px; }
-    .fk-num { font-size: 30px; }
-    .fk-arr-svg { display: none; }
-    .fk-mini-svg { display: none; }
-    .fk-retry-stack { flex: unset; gap: 8px; }
-    .fk-retry { padding: 12px 14px; }
-    .fk-retry-num { font-size: 24px; }
+    .fk-num { font-size: 28px; }
+    .fk-retry-num { font-size: 22px; }
 
     /* Performance overview — horizontal scroll */
     .metrics-section { padding: 16px 14px 18px; }
