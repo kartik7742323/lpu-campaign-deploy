@@ -869,9 +869,9 @@
     .auto-mio-arrow { display: none; }
   }
 
-  .step-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
-  .step-number { display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; background: #e0e7ff; color: #4f46e5; font-size: 14px; font-weight: 700; flex-shrink: 0; }
+  .step-header { display: flex; flex-direction: column; gap: 4px; margin-bottom: 20px; }
   .step-title { font-size: 16px; font-weight: 700; color: #0f172a; }
+  .step-subtitle { font-size: 13px; color: #64748b; font-weight: 500; }
 
   @media (max-width: 480px) {
     .stat-card { min-width: 100%; flex: 1 1 100%; }
@@ -952,8 +952,8 @@
 
       <div class="section">
         <div class="step-header">
-          <div class="step-number">2</div>
-          <div class="step-title">Campaign Retry Setup</div>
+          <div class="step-title">Step 2</div>
+          <div class="step-subtitle">Campaign Retry Setup</div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
           <!-- Scheduled Retries Box -->
