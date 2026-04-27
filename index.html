@@ -947,25 +947,66 @@
       <div class="divider"></div>
 
       <div class="section">
-        <div class="retry-toggle-row">
-          <div class="section-title" style="margin-bottom:0"><div class="section-dot"></div>Step 2: Call Retry Configuration</div>
-          <label class="toggle"><input type="checkbox" id="retryToggle" checked onchange="onRetryToggle(this.checked)"/><span class="slider"></span></label>
-        </div>
-        <p class="section-sub" style="margin-top:6px;">Automatically retry calls that go unanswered or unreachable.</p>
-        <div class="retry-body" id="retryBody">
-          <p class="count-label">Number of retry attempts</p>
-          <div class="count-row">
-            <div class="count-pill" onclick="selectCount(1,this)">1</div>
-            <div class="count-pill active" onclick="selectCount(2,this)">2</div>
-            <div class="count-pill" onclick="selectCount(3,this)">3</div>
-            <div class="count-pill" onclick="selectCount(4,this)">4</div>
-            <div class="count-pill" onclick="selectCount(5,this)">5</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <!-- Scheduled Retries Box -->
+          <div style="border:1.5px solid #e2e8f0;border-radius:12px;padding:20px;background:#fff;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+              <div>
+                <div style="font-size:14px;font-weight:700;color:#0f172a;">Scheduled Retries</div>
+                <p style="font-size:12px;color:#64748b;margin-top:2px;margin-bottom:0;">Retry calls at specific times</p>
+              </div>
+              <label class="toggle"><input type="checkbox" id="retryToggle" checked onchange="onRetryToggle(this.checked)"/><span class="slider"></span></label>
+            </div>
+            <div class="retry-body" id="retryBody" style="margin-top:14px;">
+              <p class="count-label">Number of retry attempts</p>
+              <div class="count-row">
+                <div class="count-pill" onclick="selectCount(1,this)">1</div>
+                <div class="count-pill active" onclick="selectCount(2,this)">2</div>
+                <div class="count-pill" onclick="selectCount(3,this)">3</div>
+                <div class="count-pill" onclick="selectCount(4,this)">4</div>
+                <div class="count-pill" onclick="selectCount(5,this)">5</div>
+              </div>
+              <p class="max-note">Max 5 retries per lead per campaign run.</p>
+              <div class="retry-cards" id="retryCards"></div>
+              <div class="info-callout">
+                <span style="flex-shrink:0">&#9432;</span>
+                <span>If the lead picks up on <strong>any</strong> retry, all subsequent retries are automatically cancelled. Retries must be scheduled between <strong>9:00 AM – 9:00 PM</strong>.</span>
+              </div>
+              <div class="info-callout" style="background:#fef3c7;border-color:#fcd34d;color:#92400e;margin-top:10px;">
+                <span style="flex-shrink:0">⚠</span>
+                <span>Retry timing depends on your call queue capacity. Higher call volumes may cause delays in executing retries at scheduled times. To minimize delays and ensure precise retry timing, consider upgrading your concurrent call channels.</span>
+              </div>
+            </div>
           </div>
-          <p class="max-note">Max 5 retries per lead per campaign run.</p>
-          <div class="retry-cards" id="retryCards"></div>
-          <div class="info-callout">
-            <span style="flex-shrink:0">&#9432;</span>
-            <span>If the lead picks up on <strong>any</strong> retry, all subsequent retries are automatically cancelled. Retries must be scheduled between <strong>9:00 AM – 9:00 PM</strong>.</span>
+
+          <!-- Immediate Retries Box -->
+          <div style="border:1.5px solid #e2e8f0;border-radius:12px;padding:20px;background:#fff;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+              <div>
+                <div style="font-size:14px;font-weight:700;color:#0f172a;">Immediate Retries</div>
+                <p style="font-size:12px;color:#64748b;margin-top:2px;margin-bottom:0;">Call back-to-back instantly</p>
+              </div>
+              <label class="toggle"><input type="checkbox" id="immediateRetryToggle" onchange="onImmediateRetryToggle(this.checked)"/><span class="slider"></span></label>
+            </div>
+            <div class="retry-body hidden" id="immediateRetryBody" style="margin-top:14px;">
+              <p class="count-label">Number of immediate retries</p>
+              <div class="count-row">
+                <div class="count-pill" onclick="selectImmediateCount(1,this)">1</div>
+                <div class="count-pill active" onclick="selectImmediateCount(2,this)">2</div>
+                <div class="count-pill" onclick="selectImmediateCount(3,this)">3</div>
+                <div class="count-pill" onclick="selectImmediateCount(4,this)">4</div>
+                <div class="count-pill" onclick="selectImmediateCount(5,this)">5</div>
+              </div>
+              <p class="max-note">Max 5 immediate retries per lead.</p>
+              <div class="info-callout" style="background:#f0fdf4;border-color:#bbf7d0;">
+                <span style="flex-shrink:0;">&#9432;</span>
+                <span>The lead will receive <strong id="immediateRetryLabel">2</strong> calls <strong>back-to-back</strong> until they pick up or all attempts are exhausted.</span>
+              </div>
+              <div class="info-callout" style="background:#fef3c7;border-color:#fcd34d;color:#92400e;margin-top:10px;">
+                <span style="flex-shrink:0">⚠</span>
+                <span>Immediate retry execution depends on your call queue capacity. Higher call volumes may cause delays between back-to-back calls. To ensure rapid successive calls and better execution efficiency, consider upgrading your concurrent call channels.</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -1027,217 +1068,102 @@
     </div>
   </div>
 
-  <!-- Campaign Funnel -->
-  <div class="section-card">
-    <div class="section-card-header">
-      <div class="section-card-dot" style="background:#6366f1;"></div>
-      <div class="section-card-title">Campaign Funnel</div>
-    </div>
-  <div class="funnel-section">
-
-    <div class="fk-wrap">
-
-      <!-- 195 source card -->
-      <div class="fk-src">
-        <div class="fk-src-card" style="position:relative;">
-          <div style="position:absolute;right:-5px;top:50%;transform:translateY(-50%);width:10px;height:10px;border-radius:50%;background:#4f46e5;z-index:2;"></div>
-          <div class="fk-card-body">
-            <div class="fk-src-num" style="color:#4f46e5;">195</div>
-            <div class="fk-src-lbl" style="color:#64748b;opacity:1;">Total Contacts</div>
-          </div>
-          <div class="fk-icon fk-src-icon" style="background:#e0e7ff;">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-          </div>
+  <!-- Top Metrics -->
+  <div style="padding:0 28px;margin-bottom:24px;">
+    <div style="display:flex;align-items:center;gap:12px;padding:20px 24px;overflow-x:auto;background:#fff;border:1.5px solid #e2e8f0;border-radius:12px;">
+      <!-- Total Contacts -->
+      <div style="background:#f8f9fa;border:1.5px solid #e0e3e8;border-radius:12px;padding:20px 24px;position:relative;overflow:hidden;flex:0 0 auto;min-width:170px;">
+        <div style="position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:8px;background:rgba(99,102,241,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
         </div>
+        <div style="font-size:28px;font-weight:900;color:#6366f1;line-height:1;letter-spacing:-.03em;">195</div>
+        <div style="font-size:11px;font-weight:600;color:#a78bfa;margin-top:6px;text-transform:uppercase;letter-spacing:.04em;">Total Contacts</div>
       </div>
 
-      <!-- Main fork SVG: stretches between 195 and the two lanes -->
-      <svg class="fk-main-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
-        <path d="M 0,50 H 44 Q 50,50 50,44 V 29 Q 50,25 56,25 H 100" fill="none" stroke="#1e293b" stroke-width="1" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
-        <path d="M 44,50 Q 50,50 50,56 V 71 Q 50,75 56,75 H 100" fill="none" stroke="#1e293b" stroke-width="1" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
-      </svg>
-
-      <!-- Right side: two lanes stacked -->
-      <div class="fk-lanes">
-
-        <!-- Lane 1: Connected → Qualified -->
-        <div class="fk-lane">
-          <div class="fk-card fk-connected" style="position:relative;">
-            <div style="position:absolute;left:-5px;top:50%;transform:translateY(-50%);width:10px;height:10px;border-radius:50%;background:#2563eb;z-index:2;"></div>
-            <div style="position:absolute;right:-5px;top:50%;transform:translateY(-50%);width:10px;height:10px;border-radius:50%;background:#2563eb;z-index:2;"></div>
-            <div class="fk-card-body">
-              <div class="fk-num">89 <span class="fk-num-pct">(46%)</span></div>
-              <div class="fk-lbl">Contacts Connected</div>
-            </div>
-            <div class="fk-icon">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1d4ed8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.99 14 19.79 19.79 0 0 1 1.92 5.33 2 2 0 0 1 3.92 3h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 10.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 17.92z"/></svg>
-            </div>
-          </div>
-          <svg class="fk-arr-svg" viewBox="0 0 100 10" preserveAspectRatio="none">
-            <line x1="0" y1="5" x2="100" y2="5" stroke="#1e293b" stroke-width="1" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
-          </svg>
-          <div class="fk-card fk-qualified" style="position:relative;">
-            <div style="position:absolute;left:-5px;top:50%;transform:translateY(-50%);width:10px;height:10px;border-radius:50%;background:#059669;z-index:2;"></div>
-            <div class="fk-card-body">
-              <div class="fk-num">42 <span class="fk-num-pct">(22%)</span></div>
-              <div class="fk-lbl">Contacts Qualified</div>
-            </div>
-            <div class="fk-icon">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-            </div>
-          </div>
+      <!-- Contacts in Queue -->
+      <div style="background:#f5f3ff;border:1.5px solid #e9d5ff;border-radius:12px;padding:20px 24px;position:relative;overflow:hidden;flex:0 0 auto;min-width:170px;">
+        <div style="position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:8px;background:rgba(99,102,241,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
         </div>
+        <div style="font-size:28px;font-weight:900;color:#6366f1;line-height:1;letter-spacing:-.03em;">149</div>
+        <div style="font-size:11px;font-weight:600;color:#a78bfa;margin-top:6px;text-transform:uppercase;letter-spacing:.04em;">Contacts in Queue</div>
+      </div>
 
-        <!-- Lane 2: Not Connected → Retry Pending + Retry Exhausted -->
-        <div class="fk-lane">
-          <div class="fk-card fk-nc" style="position:relative;">
-            <div style="position:absolute;left:-5px;top:50%;transform:translateY(-50%);width:10px;height:10px;border-radius:50%;background:#6d28d9;z-index:2;"></div>
-            <div style="position:absolute;right:-5px;top:50%;transform:translateY(-50%);width:10px;height:10px;border-radius:50%;background:#6d28d9;z-index:2;"></div>
-            <div class="fk-card-body">
-              <div class="fk-num">106 <span class="fk-num-pct">(54%)</span></div>
-              <div class="fk-lbl">Contacts Not Connected</div>
-            </div>
-            <div class="fk-icon">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6d28d9" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="23" y1="1" x2="17" y2="7"/><line x1="17" y1="1" x2="23" y2="7"/><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 011.1 1.18C1.1.6 1.49.1 2.06.1H5.1a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 14.9v2.02z"/></svg>
-            </div>
-          </div>
-          <svg class="fk-mini-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
-            <path d="M 0,50 H 44 Q 50,50 50,44 V 29 Q 50,25 56,25 H 100" fill="none" stroke="#1e293b" stroke-width="1" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
-            <path d="M 44,50 Q 50,50 50,56 V 71 Q 50,75 56,75 H 100" fill="none" stroke="#1e293b" stroke-width="1" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
-          </svg>
-          <div class="fk-retry-stack">
-            <div class="fk-retry fk-pending" style="position:relative;">
-              <div style="position:absolute;left:-5px;top:50%;transform:translateY(-50%);width:10px;height:10px;border-radius:50%;background:#c2410c;z-index:2;"></div>
-              <div>
-                <div class="fk-retry-num">63</div>
-                <div class="fk-retry-sub">Contacts</div>
-              </div>
-              <div>
-                <div class="fk-retry-lbl">In Retry Cycle</div>
-                <div class="fk-retry-sub">2nd retry attempt started</div>
-              </div>
-              <div class="fk-retry-icon" style="margin-left:auto;align-self:flex-start;">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#ea580c" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
-              </div>
-            </div>
-            <div class="fk-retry fk-exhausted" style="position:relative;">
-              <div style="position:absolute;left:-5px;top:50%;transform:translateY(-50%);width:10px;height:10px;border-radius:50%;background:#94a3b8;z-index:2;"></div>
-              <div>
-                <div class="fk-retry-num">43</div>
-                <div class="fk-retry-sub">Contacts</div>
-              </div>
-              <div>
-                <div class="fk-retry-lbl">Retry Exhausted</div>
-                <div class="fk-retry-sub">no attempts remaining</div>
-              </div>
-              <div class="fk-retry-icon" style="margin-left:auto;">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-              </div>
-            </div>
-          </div>
+      <!-- Contacts Connected -->
+      <div style="background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:12px;padding:20px 24px;position:relative;overflow:hidden;flex:0 0 auto;min-width:170px;">
+        <div style="position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:8px;background:rgba(59,130,246,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 011.1 1.18C1.1.6 1.49.1 2.06.1H5.1a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 14.9v2.02z"/><path d="M14.5 2.5c1.5 1.5 2.5 3.5 2.5 5.5"/><path d="M17.5 0c2 2 3 4.5 3 7.5"/></svg>
         </div>
+        <div style="font-size:28px;font-weight:900;color:#2563eb;line-height:1;letter-spacing:-.03em;">89 <span style="font-size:14px;color:#60a5fa;font-weight:600;">(46%)</span></div>
+        <div style="font-size:10px;font-weight:700;color:#60a5fa;margin-top:6px;text-transform:uppercase;letter-spacing:.04em;">Connected</div>
+      </div>
 
+      <!-- Contacts Not Connected -->
+      <div onclick="toggleNotConnectedModal()" style="background:#fff9f0;border:1.5px solid #fed7aa;border-radius:12px;padding:20px 24px;position:relative;overflow:hidden;flex:0 0 auto;min-width:170px;cursor:pointer;transition:all .25s;">
+        <div style="position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:8px;background:rgba(217,119,6,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="23" y1="1" x2="17" y2="7"/><line x1="17" y1="1" x2="23" y2="7"/><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81A19.79 19.79 0 011.1 1.18C1.1.6 1.49.1 2.06.1H5.1a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 14.9v2.02z"/></svg>
+        </div>
+        <div style="font-size:28px;font-weight:900;color:#d97706;line-height:1;letter-spacing:-.03em;">106 <span style="font-size:14px;color:#fb923c;font-weight:600;">(54%)</span></div>
+        <div style="font-size:10px;font-weight:700;color:#fb923c;margin-top:8px;text-transform:uppercase;letter-spacing:.04em;display:flex;align-items:center;gap:3px;">
+          Not Connected
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+        <style>
+          div[onclick="toggleNotConnectedModal()"]:hover {
+            background:#fffbf4;
+            border-color:#f59e0b;
+            transform:translateY(-1px);
+          }
+        </style>
+      </div>
+
+      <!-- Goal Achieved -->
+      <div style="background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:12px;padding:20px 24px;position:relative;overflow:hidden;flex:0 0 auto;min-width:170px;">
+        <div style="position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:8px;background:rgba(34,197,94,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </div>
+        <div style="font-size:28px;font-weight:900;color:#16a34a;line-height:1;letter-spacing:-.03em;">42 <span style="font-size:14px;color:#4ade80;font-weight:600;">(22%)</span></div>
+        <div style="font-size:10px;font-weight:700;color:#4ade80;margin-top:6px;text-transform:uppercase;letter-spacing:.04em;">Goal Achieved</div>
+      </div>
+
+      <!-- Average Call Duration -->
+      <div style="background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:12px;padding:20px 24px;position:relative;overflow:hidden;flex:0 0 auto;min-width:170px;">
+        <div style="position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:8px;background:rgba(34,197,94,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+        </div>
+        <div style="font-size:28px;font-weight:900;color:#16a34a;line-height:1;letter-spacing:-.03em;">2m 15s</div>
+        <div style="font-size:11px;font-weight:600;color:#4ade80;margin-top:6px;text-transform:uppercase;letter-spacing:.04em;">Average Call Duration</div>
+      </div>
+
+      <!-- Avg Attempts per Contact -->
+      <div style="background:#f5f3ff;border:1.5px solid #e9d5ff;border-radius:12px;padding:20px 24px;position:relative;overflow:hidden;flex:0 0 auto;min-width:170px;">
+        <div style="position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:8px;background:rgba(99,102,241,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0118 0 9 9 0 01-18 0"/><path d="M9 11l3 3L22 4"/></svg>
+        </div>
+        <div style="font-size:28px;font-weight:900;color:#6366f1;line-height:1;letter-spacing:-.03em;">1.1x</div>
+        <div style="font-size:11px;font-weight:600;color:#a78bfa;margin-top:6px;text-transform:uppercase;letter-spacing:.04em;">Avg Attempts / Contact</div>
+      </div>
+
+      <!-- Retried (Clickable) -->
+      <div onclick="toggleRetryModal()" style="background:#fff9f0;border:1.5px solid #fb923c;border-radius:12px;padding:20px 24px;position:relative;overflow:hidden;flex:0 0 auto;min-width:170px;cursor:pointer;transition:all .25s;">
+        <div style="position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:8px;background:rgba(251,146,60,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fb923c" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+        </div>
+        <div style="font-size:28px;font-weight:900;color:#fb923c;line-height:1;letter-spacing:-.03em;">106 <span style="font-size:14px;color:#fb923c;font-weight:600;">(59%)</span></div>
+        <div style="font-size:10px;font-weight:700;color:#fb923c;margin-top:8px;text-transform:uppercase;letter-spacing:.04em;display:flex;align-items:center;gap:3px;">
+          Retried
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fb923c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+        <style>
+          div[onclick="toggleRetryModal()"]:hover {
+            background:#fffbf4;
+            border-color:#f97316;
+            transform:translateY(-1px);
+          }
+        </style>
       </div>
     </div>
   </div>
-  <div style="display:flex;align-items:center;margin:0 28px;">
-    <div style="flex:1;height:1px;background:#e2e8f0;"></div>
-    <button id="t2-metrics-btn" onclick="toggleMetrics('t2')" style="display:flex;align-items:center;gap:4px;background:none;border:none;cursor:pointer;color:#94a3b8;font-size:11px;font-weight:600;padding:4px 8px;letter-spacing:.02em;">
-      <span id="t2-metrics-label">Show Breakdown</span>
-      <svg id="t2-metrics-arrow" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="transition:transform .25s;transform:rotate(0deg);"><polyline points="6 9 12 15 18 9"/></svg>
-    </button>
-  </div>
-  <div id="t2-metrics-panel" style="display:none;">
-  <div class="metrics-section" style="padding:14px 28px 16px;">
-    <div style="display:flex;border:1.5px solid #e2e8f0;border-radius:12px;overflow:hidden;background:#fff;box-shadow:0 1px 4px rgba(15,23,42,.06);">
-      <!-- Not Connected Breakdown -->
-      <div style="flex:1;padding:14px 20px;background:#fffcf8;">
-        <div style="display:flex;align-items:center;gap:6px;margin-bottom:11px;padding-bottom:9px;border-bottom:1px solid #fde8c8;">
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="23" y1="1" x2="17" y2="7"/><line x1="17" y1="1" x2="23" y2="7"/><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 011.1 1.18C1.1.6 1.49.1 2.06.1H5.1a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 14.9v2.02z"/></svg>
-          <span style="font-size:10px;font-weight:700;color:#b45309;text-transform:uppercase;letter-spacing:.07em;">Not Connected Breakdown</span>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:8px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <div style="display:flex;align-items:center;gap:7px;">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
-              <span style="font-size:12.5px;color:#374151;font-weight:500;">Voicemail</span>
-            </div>
-            <div style="display:flex;align-items:center;gap:6px;">
-              <span style="font-size:13px;font-weight:700;color:#0f172a;">31</span>
-              <span style="font-size:11px;font-weight:600;color:#d97706;background:#fef3c7;padding:1px 7px;border-radius:5px;">16%</span>
-            </div>
-          </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <div style="display:flex;align-items:center;gap:7px;">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 011.1 1.18C1.1.6 1.49.1 2.06.1H5.1a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 14.9v2.02z"/><polyline points="22 8 22 2 16 2"/><line x1="22" y1="2" x2="16" y2="8"/></svg>
-              <span style="font-size:12.5px;color:#374151;font-weight:500;">Not Answered</span>
-            </div>
-            <div style="display:flex;align-items:center;gap:6px;">
-              <span style="font-size:13px;font-weight:700;color:#0f172a;">20</span>
-              <span style="font-size:11px;font-weight:600;color:#7c3aed;background:#f5f3ff;padding:1px 7px;border-radius:5px;">10%</span>
-            </div>
-          </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <div style="display:flex;align-items:center;gap:7px;">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
-              <span style="font-size:12.5px;color:#374151;font-weight:500;">Busy</span>
-            </div>
-            <div style="display:flex;align-items:center;gap:6px;">
-              <span style="font-size:13px;font-weight:700;color:#0f172a;">12</span>
-              <span style="font-size:11px;font-weight:600;color:#2563eb;background:#dbeafe;padding:1px 7px;border-radius:5px;">6%</span>
-            </div>
-          </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <div style="display:flex;align-items:center;gap:7px;">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-              <span style="font-size:12.5px;color:#374151;font-weight:500;">Call Failed</span>
-            </div>
-            <div style="display:flex;align-items:center;gap:6px;">
-              <span style="font-size:13px;font-weight:700;color:#0f172a;">4</span>
-              <span style="font-size:11px;font-weight:600;color:#dc2626;background:#fee2e2;padding:1px 7px;border-radius:5px;">2%</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div style="width:1px;background:#e2e8f0;flex-shrink:0;"></div>
-      <!-- Connected Breakdown -->
-      <div style="flex:1;padding:14px 20px;background:#f0fdf4;">
-        <div style="display:flex;align-items:center;gap:6px;margin-bottom:11px;padding-bottom:9px;border-bottom:1px solid #bbf7d0;">
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 011.1 1.18C1.1.6 1.49.1 2.06.1H5.1a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 14.9v2.02z"/><path d="M14.5 2.5c1.5 1.5 2.5 3.5 2.5 5.5"/><path d="M17.5 0c2 2 3 4.5 3 7.5"/></svg>
-          <span style="font-size:10px;font-weight:700;color:#047857;text-transform:uppercase;letter-spacing:.07em;">Connected Breakdown</span>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:8px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <div style="display:flex;align-items:center;gap:7px;">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg>
-              <span style="font-size:12.5px;color:#374151;font-weight:500;">Total Connected</span>
-            </div>
-            <div style="display:flex;align-items:center;gap:6px;">
-              <span style="font-size:13px;font-weight:700;color:#059669;">89</span>
-              <span style="font-size:11px;font-weight:600;color:#059669;background:#dcfce7;padding:1px 7px;border-radius:5px;">46%</span>
-            </div>
-          </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <div style="display:flex;align-items:center;gap:7px;">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0891b2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              <span style="font-size:12.5px;color:#374151;font-weight:500;">Avg Call Duration</span>
-            </div>
-            <span style="font-size:13px;font-weight:700;color:#0891b2;">0:48</span>
-          </div>
-
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <div style="display:flex;align-items:center;gap:7px;">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
-              <span style="font-size:12.5px;color:#374151;font-weight:500;">Avg Attempts to Connect</span>
-            </div>
-            <span style="font-size:13px;font-weight:700;color:#6366f1;">1.8 Calls / Contact</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  </div><!-- /t2-metrics-panel -->
-  </div><!-- /section-card Funnel + Performance -->
 
   <!-- Contacts Overview -->
 
@@ -1276,7 +1202,6 @@
         <div class="filter-menu-item" onclick="setFilter('status','','All Statuses','ddStatus')">All Statuses</div>
         <div class="filter-menu-divider"></div>
         <div class="filter-menu-item" onclick="setFilter('status','connected','Connected','ddStatus')">Connected</div>
-        <div class="filter-menu-item" onclick="setFilter('status','voicemail','Voicemail','ddStatus')">Voicemail</div>
         <div class="filter-menu-item" onclick="setFilter('status','busy','Busy','ddStatus')">Busy</div>
         <div class="filter-menu-item" onclick="setFilter('status','not-answered','Not Answered','ddStatus')">Not Answered</div>
         <div class="filter-menu-item" onclick="setFilter('status','call-failed','Call Failed','ddStatus')">Call Failed</div>
@@ -1303,78 +1228,8 @@
     </thead>
     <tbody id="contactTableBody">
 
-      <!-- Ellie: VM → VM → Connected (outbound) -->
-      <tr style="cursor:pointer" data-outcome="qualified" data-status="connected" data-timeline="tl-ellie" onclick="toggleTimeline('tl-ellie', this.querySelector('.expand-btn'))">
-        <td>
-          <div class="cust-cell">
-            <div class="cust-avatar av-em">EM</div>
-            <div>
-              <div class="cust-name">Ellie Mayucorp</div>
-              <div class="cust-phone">+17186298584</div>
-              <div style="font-size:11px;color:#9ca3af;margin-top:2px;">Created Feb 1, 2026</div>
-            </div>
-          </div>
-        </td>
-        <td><span class="att-count atc-done">3 / 3 attempts</span></td>
-        <td><div style="font-size:13px;color:#111827;font-weight:500;">Feb 4, 2026</div><div style="font-size:11.5px;color:#9ca3af;">6:10 PM · 1m 25s</div></td>
-        <td><span class="att-chip ac-connected">Connected</span></td>
-        <td><span class="cs-badge cs-qualified">Lead Qualified</span></td>
-        <td>
-          <div class="action-cell">
-            <button class="expand-btn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></button>
-            <div class="kebab-wrap">
-              <button class="kebab-btn" onclick="toggleKebab(this,event)">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
-              </button>
-              <div class="kebab-menu">
-                <button class="kebab-item" onclick="event.stopPropagation()">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-                  View Lead Details
-                </button>
-              </div>
-            </div>
-          </div>
-        </td>
-      </tr>
-      <tr id="tl-ellie" class="timeline-row tl-hidden">
-        <td colspan="6">
-          <div class="timeline-wrap">
-            <div class="tl-heading">Call History</div>
-            <div class="timeline">
-              <div class="tl-event">
-                <div class="tl-dot td-voicemail"></div>
-                <div class="tl-body">
-                  <div class="tl-top"><span class="tl-label">1st Call</span><span class="tl-tag tt-outbound">Outbound</span></div>
-                  <div class="tl-meta">Feb 2, 2026 · 2:10 PM · 0m 22s</div>
-                  <span class="tl-outcome">Voicemail</span>
-                </div>
-              </div>
-              <div class="tl-event">
-                <div class="tl-dot td-voicemail"></div>
-                <div class="tl-body">
-                  <div class="tl-top"><span class="tl-label">1st Retry</span><span class="tl-tag tt-outbound">Outbound</span></div>
-                  <div class="tl-meta">Feb 3, 2026 · 10:00 AM · 0m 18s</div>
-                  <span class="tl-outcome">Voicemail</span>
-                </div>
-              </div>
-              <div class="tl-event">
-                <div class="tl-dot td-connected"></div>
-                <div class="tl-body">
-                  <div class="tl-top"><span class="tl-label">2nd Retry</span><span class="tl-tag tt-outbound">Outbound</span></div>
-                  <div class="tl-meta">Feb 4, 2026 · 6:10 PM · 1m 25s</div>
-                  <span class="tl-outcome">Connected · Follow-up Required</span><br>
-                  <button class="tl-transcript-link" onclick="openTranscript(event,'Ellie Mayucorp','2nd Retry — Feb 4, 2026 · 6:10 PM · 1m 25s')">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-                    View Transcript
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </td>
-      </tr>
-
-      <!-- James: VM → VM → Inbound call (customer called back, cancels retry 2) -->
+      <!-- Priya: Busy → Connected (moved up) -->
+      <!-- James: Inbound call (customer called back) -->
       <tr style="cursor:pointer" data-outcome="qualified" data-status="connected" data-timeline="tl-james" onclick="toggleTimeline('tl-james', this.querySelector('.expand-btn'))">
         <td>
           <div class="cust-cell">
@@ -1413,19 +1268,17 @@
             <div class="tl-heading">Call History</div>
             <div class="timeline">
               <div class="tl-event">
-                <div class="tl-dot td-voicemail"></div>
+                <div class="tl-dot td-connected"></div>
                 <div class="tl-body">
-                  <div class="tl-top"><span class="tl-label">1st Call</span><span class="tl-tag tt-outbound">Outbound</span></div>
+                  <div class="tl-top"><span class="tl-label">Initial Call</span><span class="tl-tag tt-outbound">Outbound</span></div>
                   <div class="tl-meta">Feb 2, 2026 · 2:02 PM · 0m 24s</div>
-                  <span class="tl-outcome">Voicemail</span>
                 </div>
               </div>
               <div class="tl-event">
-                <div class="tl-dot td-voicemail"></div>
+                <div class="tl-dot td-connected"></div>
                 <div class="tl-body">
                   <div class="tl-top"><span class="tl-label">1st Retry</span><span class="tl-tag tt-outbound">Outbound</span></div>
                   <div class="tl-meta">Feb 3, 2026 · 11:00 AM · 0m 20s</div>
-                  <span class="tl-outcome">Voicemail</span>
                 </div>
               </div>
               <div class="tl-event">
@@ -1433,8 +1286,6 @@
                 <div class="tl-body">
                   <div class="tl-top"><span class="tl-label">Customer Called Back</span><span class="tl-tag tt-inbound">↩ Inbound</span></div>
                   <div class="tl-meta">Feb 4, 2026 · 3:45 PM · 2m 10s</div>
-                  <span class="tl-outcome">Connected · Interested — Demo Scheduled</span>
-                  <div class="tl-inbound-note">Retry 2 (scheduled Feb 5) was automatically cancelled when inbound call was received.</div>
                   <button class="tl-transcript-link" onclick="openTranscript(event,'James Patterson','Inbound — Feb 4, 2026 · 3:45 PM · 2m 10s')">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
                     View Transcript
@@ -1487,9 +1338,8 @@
               <div class="tl-event">
                 <div class="tl-dot td-busy"></div>
                 <div class="tl-body">
-                  <div class="tl-top"><span class="tl-label">1st Call</span><span class="tl-tag tt-outbound">Outbound</span></div>
+                  <div class="tl-top"><span class="tl-label">Initial Call</span><span class="tl-tag tt-outbound">Outbound</span></div>
                   <div class="tl-meta">Feb 2, 2026 · 12:02 PM · 0m 5s</div>
-                  <span class="tl-outcome">Busy</span>
                 </div>
               </div>
               <div class="tl-event">
@@ -1497,7 +1347,6 @@
                 <div class="tl-body">
                   <div class="tl-top"><span class="tl-label">1st Retry</span><span class="tl-tag tt-outbound">Outbound</span></div>
                   <div class="tl-meta">Feb 3, 2026 · 2:00 PM · 1m 12s</div>
-                  <span class="tl-outcome">Connected · General Information Shared</span><br>
                   <button class="tl-transcript-link" onclick="openTranscript(event,'Priya Sharma','1st Retry — Feb 3, 2026 · 2:00 PM · 1m 12s')">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
                     View Transcript
@@ -1510,71 +1359,6 @@
       </tr>
 
       <!-- Rahul: VM → VM → Retry scheduled -->
-      <tr style="cursor:pointer" data-outcome="not-qualified" data-status="voicemail" data-timeline="tl-rahul" onclick="toggleTimeline('tl-rahul', this.querySelector('.expand-btn'))">
-        <td>
-          <div class="cust-cell">
-            <div class="cust-avatar av-u">RV</div>
-            <div>
-              <div class="cust-name">Rahul Verma</div>
-              <div class="cust-phone">+19179156226</div>
-              <div style="font-size:11px;color:#9ca3af;margin-top:2px;">Created Feb 1, 2026</div>
-            </div>
-          </div>
-        </td>
-        <td><span class="att-count atc-pending">2 / 3 attempts</span></td>
-        <td><div style="font-size:13px;color:#111827;font-weight:500;">Feb 3, 2026</div><div style="font-size:11.5px;color:#9ca3af;">10:30 AM · 0m 19s</div></td>
-        <td><span class="att-chip ac-voicemail">Voicemail</span></td>
-        <td><span class="cs-badge cs-not-reached">Not Qualified</span></td>
-        <td>
-          <div class="action-cell">
-            <button class="expand-btn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></button>
-            <div class="kebab-wrap">
-              <button class="kebab-btn" onclick="toggleKebab(this,event)">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
-              </button>
-              <div class="kebab-menu">
-                <button class="kebab-item" onclick="event.stopPropagation()">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-                  View Lead Details
-                </button>
-              </div>
-            </div>
-          </div>
-        </td>
-      </tr>
-      <tr id="tl-rahul" class="timeline-row tl-hidden">
-        <td colspan="6">
-          <div class="timeline-wrap">
-            <div class="tl-heading">Call History</div>
-            <div class="timeline">
-              <div class="tl-event">
-                <div class="tl-dot td-voicemail"></div>
-                <div class="tl-body">
-                  <div class="tl-top"><span class="tl-label">1st Call</span><span class="tl-tag tt-outbound">Outbound</span></div>
-                  <div class="tl-meta">Feb 2, 2026 · 12:02 PM · 0m 22s</div>
-                  <span class="tl-outcome">Voicemail</span>
-                </div>
-              </div>
-              <div class="tl-event">
-                <div class="tl-dot td-voicemail"></div>
-                <div class="tl-body">
-                  <div class="tl-top"><span class="tl-label">1st Retry</span><span class="tl-tag tt-outbound">Outbound</span></div>
-                  <div class="tl-meta">Feb 3, 2026 · 10:30 AM · 0m 19s</div>
-                  <span class="tl-outcome">Voicemail</span>
-                </div>
-              </div>
-              <div class="tl-event">
-                <div class="tl-dot td-pending"></div>
-                <div class="tl-body">
-                  <div class="tl-top"><span class="tl-label">2nd Retry</span><span class="tl-tag tt-pending">Scheduled</span></div>
-                  <div class="tl-meta">Feb 5, 2026 · 11:00 AM</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </td>
-      </tr>
-
       <!-- Dennis: Connected on 1st call -->
       <tr style="cursor:pointer" data-outcome="qualified" data-status="connected" data-timeline="tl-dennis" onclick="toggleTimeline('tl-dennis', this.querySelector('.expand-btn'))">
         <td>
@@ -1616,73 +1400,9 @@
               <div class="tl-event">
                 <div class="tl-dot td-connected"></div>
                 <div class="tl-body">
-                  <div class="tl-top"><span class="tl-label">1st Call</span><span class="tl-tag tt-outbound">Outbound</span></div>
+                  <div class="tl-top"><span class="tl-label">Initial Call</span><span class="tl-tag tt-outbound">Outbound</span></div>
                   <div class="tl-meta">Feb 1, 2026 · 12:01 PM · 1m 34s</div>
-                  <span class="tl-outcome">Connected · General Information Shared</span><br>
                   <button class="tl-transcript-link" onclick="openTranscript(event,'Dennis','1st Call — Feb 1, 2026 · 12:01 PM · 1m 34s')">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-                    View Transcript
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </td>
-      </tr>
-
-      <!-- Sofia: VM → Connected -->
-      <tr style="cursor:pointer" data-outcome="not-qualified" data-status="connected" data-timeline="tl-sofia" onclick="toggleTimeline('tl-sofia', this.querySelector('.expand-btn'))">
-        <td>
-          <div class="cust-cell">
-            <div class="cust-avatar av-s">SF</div>
-            <div>
-              <div class="cust-name">Sofia</div>
-              <div class="cust-phone">+19299908326</div>
-              <div style="font-size:11px;color:#9ca3af;margin-top:2px;">Created Jan 31, 2026</div>
-            </div>
-          </div>
-        </td>
-        <td><span class="att-count atc-done">2 / 3 attempts</span></td>
-        <td><div style="font-size:13px;color:#111827;font-weight:500;">Feb 1, 2026</div><div style="font-size:11.5px;color:#9ca3af;">12:00 PM · 0m 46s</div></td>
-        <td><span class="att-chip ac-connected">Connected</span></td>
-        <td><span class="cs-badge cs-not-reached">Not Qualified</span></td>
-        <td>
-          <div class="action-cell">
-            <button class="expand-btn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></button>
-            <div class="kebab-wrap">
-              <button class="kebab-btn" onclick="toggleKebab(this,event)">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
-              </button>
-              <div class="kebab-menu">
-                <button class="kebab-item" onclick="event.stopPropagation()">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-                  View Lead Details
-                </button>
-              </div>
-            </div>
-          </div>
-        </td>
-      </tr>
-      <tr id="tl-sofia" class="timeline-row tl-hidden">
-        <td colspan="6">
-          <div class="timeline-wrap">
-            <div class="tl-heading">Call History</div>
-            <div class="timeline">
-              <div class="tl-event">
-                <div class="tl-dot td-voicemail"></div>
-                <div class="tl-body">
-                  <div class="tl-top"><span class="tl-label">1st Call</span><span class="tl-tag tt-outbound">Outbound</span></div>
-                  <div class="tl-meta">Jan 31, 2026 · 9:00 AM · 0m 20s</div>
-                  <span class="tl-outcome">Voicemail</span>
-                </div>
-              </div>
-              <div class="tl-event">
-                <div class="tl-dot td-connected"></div>
-                <div class="tl-body">
-                  <div class="tl-top"><span class="tl-label">1st Retry</span><span class="tl-tag tt-outbound">Outbound</span></div>
-                  <div class="tl-meta">Feb 1, 2026 · 12:00 PM · 0m 46s</div>
-                  <span class="tl-outcome">Connected · Schedule Recall</span><br>
-                  <button class="tl-transcript-link" onclick="openTranscript(event,'Sofia','1st Retry — Feb 1, 2026 · 12:00 PM · 0m 46s')">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
                     View Transcript
                   </button>
@@ -1706,7 +1426,7 @@
           </div>
         </td>
         <td><span class="att-count atc-pending">1 / 3 attempts</span></td>
-        <td><div style="font-size:13px;color:#111827;font-weight:500;">Feb 5, 2026</div><div style="font-size:11.5px;color:#9ca3af;">11:00 AM · 0m 0s</div></td>
+        <td><div style="font-size:13px;color:#111827;font-weight:500;">Feb 5, 2026</div><div style="font-size:11.5px;color:#9ca3af;">11:00 AM</div></td>
         <td><span class="att-chip" style="background:#fff1f2;color:#be123c;border:1px solid #fecdd3;">Call Failed</span></td>
         <td><span class="cs-badge cs-not-reached">Not Qualified</span></td>
         <td>
@@ -1734,8 +1454,8 @@
               <div class="tl-event">
                 <div class="tl-dot" style="background:#ef4444;box-shadow:0 0 0 3px #fee2e2;"></div>
                 <div class="tl-body">
-                  <div class="tl-top"><span class="tl-label">1st Call</span><span class="tl-tag tt-outbound">Outbound</span></div>
-                  <div class="tl-meta">Feb 5, 2026 · 11:00 AM · 0m 0s</div>
+                  <div class="tl-top"><span class="tl-label">Initial Call</span><span class="tl-tag tt-outbound">Outbound</span></div>
+                  <div class="tl-meta">Feb 5, 2026 · 11:00 AM</div>
                   <span class="tl-outcome">Call Failed — Network Error</span>
                 </div>
               </div>
@@ -1793,7 +1513,7 @@
               <div class="tl-event">
                 <div class="tl-dot td-busy"></div>
                 <div class="tl-body">
-                  <div class="tl-top"><span class="tl-label">1st Call</span><span class="tl-tag tt-outbound">Outbound</span></div>
+                  <div class="tl-top"><span class="tl-label">Initial Call</span><span class="tl-tag tt-outbound">Outbound</span></div>
                   <div class="tl-meta">Feb 3, 2026 · 9:00 AM · 0m 4s</div>
                   <span class="tl-outcome">Busy</span>
                 </div>
@@ -1811,7 +1531,6 @@
                 <div class="tl-body">
                   <div class="tl-top"><span class="tl-label">2nd Retry</span><span class="tl-tag tt-outbound">Outbound</span></div>
                   <div class="tl-meta">Feb 5, 2026 · 4:30 PM · 2m 05s</div>
-                  <span class="tl-outcome">Connected · Interested — Brochure Sent</span><br>
                   <button class="tl-transcript-link" onclick="openTranscript(event,'Vikram Singh','2nd Retry — Feb 5, 2026 · 4:30 PM · 2m 05s')">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
                     View Transcript
@@ -1836,7 +1555,7 @@
           </div>
         </td>
         <td><span class="att-count atc-done">3 / 3 attempts</span></td>
-        <td><div style="font-size:13px;color:#111827;font-weight:500;">Feb 4, 2026</div><div style="font-size:11.5px;color:#9ca3af;">2:00 PM · 0m 0s</div></td>
+        <td><div style="font-size:13px;color:#111827;font-weight:500;">Feb 4, 2026</div><div style="font-size:11.5px;color:#9ca3af;">2:00 PM</div></td>
         <td><span class="att-chip ac-voicemail">Not Answered</span></td>
         <td><span class="cs-badge cs-not-reached">Not Qualified</span></td>
         <td>
@@ -1864,8 +1583,8 @@
               <div class="tl-event">
                 <div class="tl-dot td-voicemail"></div>
                 <div class="tl-body">
-                  <div class="tl-top"><span class="tl-label">1st Call</span><span class="tl-tag tt-outbound">Outbound</span></div>
-                  <div class="tl-meta">Feb 2, 2026 · 10:00 AM · 0m 0s</div>
+                  <div class="tl-top"><span class="tl-label">Initial Call</span><span class="tl-tag tt-outbound">Outbound</span></div>
+                  <div class="tl-meta">Feb 2, 2026 · 10:00 AM</div>
                   <span class="tl-outcome">Not Answered</span>
                 </div>
               </div>
@@ -1873,7 +1592,7 @@
                 <div class="tl-dot td-voicemail"></div>
                 <div class="tl-body">
                   <div class="tl-top"><span class="tl-label">1st Retry</span><span class="tl-tag tt-outbound">Outbound</span></div>
-                  <div class="tl-meta">Feb 3, 2026 · 12:00 PM · 0m 0s</div>
+                  <div class="tl-meta">Feb 3, 2026 · 12:00 PM</div>
                   <span class="tl-outcome">Not Answered</span>
                 </div>
               </div>
@@ -1881,72 +1600,8 @@
                 <div class="tl-dot td-voicemail"></div>
                 <div class="tl-body">
                   <div class="tl-top"><span class="tl-label">2nd Retry</span><span class="tl-tag tt-outbound">Outbound</span></div>
-                  <div class="tl-meta">Feb 4, 2026 · 2:00 PM · 0m 0s</div>
+                  <div class="tl-meta">Feb 4, 2026 · 2:00 PM</div>
                   <span class="tl-outcome">Not Answered — Max retries reached</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </td>
-      </tr>
-
-      <!-- Arjun: Voicemail → Inbound callback -->
-      <tr style="cursor:pointer" data-outcome="qualified" data-status="connected" data-timeline="tl-arjun" onclick="toggleTimeline('tl-arjun', this.querySelector('.expand-btn'))">
-        <td>
-          <div class="cust-cell">
-            <div class="cust-avatar av-u" style="background:#ecfdf5;color:#065f46;">AR</div>
-            <div>
-              <div class="cust-name">Arjun Rao</div>
-              <div class="cust-phone">+91-9123456789</div>
-              <div style="font-size:11px;color:#9ca3af;margin-top:2px;">Created Feb 4, 2026</div>
-            </div>
-          </div>
-        </td>
-        <td><span class="att-count atc-done">1 / 3 attempts</span></td>
-        <td><div style="font-size:13px;color:#111827;font-weight:500;">Feb 5, 2026</div><div style="font-size:11.5px;color:#9ca3af;">9:15 AM · 3m 40s</div></td>
-        <td><div style="display:flex;flex-direction:column;gap:4px;"><span class="att-chip ac-connected">Connected</span><span class="att-chip" style="background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;">↩ Inbound</span></div></td>
-        <td><span class="cs-badge cs-qualified">Lead Qualified</span></td>
-        <td>
-          <div class="action-cell">
-            <button class="expand-btn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></button>
-            <div class="kebab-wrap">
-              <button class="kebab-btn" onclick="toggleKebab(this,event)">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
-              </button>
-              <div class="kebab-menu">
-                <button class="kebab-item" onclick="event.stopPropagation()">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-                  View Lead Details
-                </button>
-              </div>
-            </div>
-          </div>
-        </td>
-      </tr>
-      <tr id="tl-arjun" class="timeline-row tl-hidden">
-        <td colspan="6">
-          <div class="timeline-wrap">
-            <div class="tl-heading">Call History</div>
-            <div class="timeline">
-              <div class="tl-event">
-                <div class="tl-dot td-voicemail"></div>
-                <div class="tl-body">
-                  <div class="tl-top"><span class="tl-label">1st Call</span><span class="tl-tag tt-outbound">Outbound</span></div>
-                  <div class="tl-meta">Feb 4, 2026 · 3:00 PM · 0m 22s</div>
-                  <span class="tl-outcome">Voicemail</span>
-                </div>
-              </div>
-              <div class="tl-event">
-                <div class="tl-dot td-inbound"></div>
-                <div class="tl-body">
-                  <div class="tl-top"><span class="tl-label">Customer Called Back</span><span class="tl-tag tt-inbound">↩ Inbound</span></div>
-                  <div class="tl-meta">Feb 5, 2026 · 9:15 AM · 3m 40s</div>
-                  <span class="tl-outcome">Connected · Admission Form Requested</span>
-                  <div class="tl-inbound-note">1st Retry (scheduled Feb 6) was automatically cancelled when inbound call was received.</div>
-                  <button class="tl-transcript-link" onclick="openTranscript(event,'Arjun Rao','Inbound — Feb 5, 2026 · 9:15 AM · 3m 40s')">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-                    View Transcript
-                  </button>
                 </div>
               </div>
             </div>
@@ -1958,6 +1613,149 @@
   </table>
   </div><!-- /calls-table-wrap -->
   </div><!-- /section-card Contacts Overview -->
+
+  <!-- Retry Modal -->
+  <div id="retryModal" style="position:fixed;inset:0;background:rgba(15,23,42,.45);backdrop-filter:blur(3px);z-index:1000;display:none;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;overflow-y:auto;">
+    <div style="width:500px;max-width:95vw;background:#fff;border-radius:20px;box-shadow:0 20px 60px rgba(15,23,42,.18);overflow:visible;margin:20px auto;">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid #f1f5f9;position:sticky;top:0;background:#fff;z-index:10;">
+        <div>
+          <div style="font-size:15px;font-weight:700;color:#0f172a;letter-spacing:-.02em;">Retry Details</div>
+          <div style="font-size:12px;color:#94a3b8;margin-top:2px;">Call attempts breakdown</div>
+        </div>
+        <button onclick="toggleRetryModal()" style="background:none;border:none;cursor:pointer;color:#94a3b8;font-size:20px;padding:4px 8px;border-radius:6px;line-height:1;transition:all .15s;">✕</button>
+      </div>
+      <div style="padding:24px;max-height:calc(100vh - 140px);overflow-y:auto;">
+        <div style="margin-bottom:24px;">
+          <div style="font-size:12px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:14px;">Retry Status</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+            <div style="background:#fee2e2;border:none;border-radius:12px;padding:16px;">
+              <div style="font-size:12px;font-weight:600;color:#991b1b;margin-bottom:8px;">Retry Exhausted</div>
+              <div style="font-size:28px;font-weight:700;color:#dc2626;line-height:1;">43</div>
+              <div style="font-size:11px;color:#b91c1c;margin-top:6px;">contacts</div>
+            </div>
+            <div style="background:#dcfce7;border:none;border-radius:12px;padding:16px;">
+              <div style="font-size:12px;font-weight:600;color:#15803d;margin-bottom:8px;">Next Retry Scheduled</div>
+              <div style="font-size:28px;font-weight:700;color:#16a34a;line-height:1;">63</div>
+              <div style="font-size:11px;color:#166534;margin-top:6px;">contacts</div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:14px;">Call Attempts Breakdown</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #e2e8f0;">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 011.1 1.18C1.1.6 1.49.1 2.06.1H5.1a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 14.9v2.02z"/></svg>
+                <span style="font-size:13px;font-weight:500;color:#0f172a;">Initial Call</span>
+              </div>
+              <div style="display:flex;gap:12px;align-items:center;text-align:right;">
+                <div>
+                  <div style="font-size:12px;color:#64748b;">195 dialed</div>
+                  <div style="font-size:13px;font-weight:600;color:#1e293b;margin-top:2px;">89 connected</div>
+                </div>
+                <div style="font-size:12px;font-weight:600;color:#6366f1;min-width:35px;">46%</div>
+              </div>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #e2e8f0;">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+                <span style="font-size:13px;font-weight:500;color:#0f172a;">1st Retry Attempt</span>
+              </div>
+              <div style="display:flex;gap:12px;align-items:center;text-align:right;">
+                <div>
+                  <div style="font-size:12px;color:#64748b;">106 dialed</div>
+                  <div style="font-size:13px;font-weight:600;color:#1e293b;margin-top:2px;">31 connected</div>
+                </div>
+                <div style="font-size:12px;font-weight:600;color:#6366f1;min-width:35px;">29%</div>
+              </div>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+                <span style="font-size:13px;font-weight:500;color:#0f172a;">2nd Retry Attempt</span>
+              </div>
+              <div style="display:flex;gap:12px;align-items:center;text-align:right;">
+                <div>
+                  <div style="font-size:12px;color:#64748b;">42 dialed</div>
+                  <div style="font-size:13px;font-weight:600;color:#1e293b;margin-top:2px;">12 connected</div>
+                </div>
+                <div style="font-size:12px;font-weight:600;color:#6366f1;min-width:35px;">29%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Not Connected Modal -->
+  <div id="notConnectedModal" style="position:fixed;inset:0;background:rgba(15,23,42,.45);backdrop-filter:blur(3px);z-index:1000;display:none;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;overflow-y:auto;">
+    <div style="width:500px;max-width:95vw;background:#fff;border-radius:20px;box-shadow:0 20px 60px rgba(15,23,42,.18);overflow:visible;margin:20px auto;">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid #f1f5f9;position:sticky;top:0;background:#fff;z-index:10;">
+        <div>
+          <div style="font-size:15px;font-weight:700;color:#0f172a;letter-spacing:-.02em;">Not Connected Analysis</div>
+          <div style="font-size:12px;color:#94a3b8;margin-top:2px;">Breakdown of contact not connected reasons</div>
+        </div>
+        <button onclick="toggleNotConnectedModal()" style="background:none;border:none;cursor:pointer;color:#94a3b8;font-size:20px;padding:4px 8px;border-radius:6px;line-height:1;transition:all .15s;">✕</button>
+      </div>
+      <div style="padding:24px;max-height:calc(100vh - 140px);overflow-y:auto;">
+        <div>
+          <div style="font-size:12px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:14px;">Not Connected Breakdown</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:#f0f9ff;border-radius:10px;border:none;">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0369a1" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="6" x2="12" y2="12"/><line x1="12" y1="12" x2="16" y2="16"/></svg>
+                <span style="font-size:13px;font-weight:600;color:#0c4a6e;">Not Answered</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;">
+                <span style="font-size:13px;font-weight:700;color:#0c4a6e;">20</span>
+                <span style="font-size:12px;font-weight:600;color:#0369a1;">10%</span>
+              </div>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:#fef3c7;border-radius:10px;border:none;">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#b45309" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 011.1 1.18C1.1.6 1.49.1 2.06.1H5.1a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 14.9v2.02z"/></svg>
+                <span style="font-size:13px;font-weight:600;color:#92400e;">Busy</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;">
+                <span style="font-size:13px;font-weight:700;color:#92400e;">12</span>
+                <span style="font-size:12px;font-weight:600;color:#b45309;">6%</span>
+              </div>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:#fee2e2;border-radius:10px;border:none;">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                <span style="font-size:13px;font-weight:600;color:#991b1b;">Call Failed</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;">
+                <span style="font-size:13px;font-weight:700;color:#991b1b;">4</span>
+                <span style="font-size:12px;font-weight:600;color:#dc2626;">2%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  function toggleRetryModal(){
+    const modal=document.getElementById('retryModal');
+    if(modal.style.display==='none'||modal.style.display===''){
+      modal.style.display='flex';setTimeout(()=>{modal.style.opacity='1';modal.style.pointerEvents='auto';},10);
+    }else{
+      modal.style.opacity='0';modal.style.pointerEvents='none';setTimeout(()=>{modal.style.display='none';},200);
+    }
+  }
+  function toggleNotConnectedModal(){
+    const modal=document.getElementById('notConnectedModal');
+    if(modal.style.display==='none'||modal.style.display===''){
+      modal.style.display='flex';setTimeout(()=>{modal.style.opacity='1';modal.style.pointerEvents='auto';},10);
+    }else{
+      modal.style.opacity='0';modal.style.pointerEvents='none';setTimeout(()=>{modal.style.display='none';},200);
+    }
+  }
+  </script>
 
 </div>
 </div><!-- /t2 -->
@@ -1996,185 +1794,103 @@
     </div>
   </div>
 
-  <!-- Campaign Funnel -->
-  <div class="section-card">
-    <div class="section-card-header">
-      <div class="section-card-dot" style="background:#6366f1;"></div>
-      <div class="section-card-title">Campaign Funnel</div>
-    </div>
-    <div class="funnel-section" style="padding:10px 24px 6px;">
-  <div style="display:flex;align-items:center;justify-content:center;gap:0;">
-
-    <!-- Donut 1: Total Contacts -->
-    <div style="display:flex;flex-direction:column;align-items:center;gap:8px;flex:1;">
-      <svg width="100" height="100" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="70" cy="70" r="52" fill="none" stroke="#e0e7ff" stroke-width="12"/>
-        <circle cx="70" cy="70" r="52" fill="none" stroke="#6366f1" stroke-width="12"
-          stroke-dasharray="326.7 0" stroke-linecap="round"
-          transform="rotate(-90 70 70)"/>
-        <text x="70" y="64" text-anchor="middle" fill="#1e293b" font-size="34" font-weight="800" font-family="system-ui,sans-serif">195</text>
-        <text x="70" y="82" text-anchor="middle" fill="#64748b" font-size="13" font-weight="600" font-family="system-ui,sans-serif">contacts</text>
-      </svg>
-      <div style="text-align:center;">
-        <div style="font-size:13px;font-weight:800;color:#1e293b;">Total Contacts</div>
-        <div style="font-size:11px;font-weight:600;color:#64748b;margin-top:2px;">Campaign audience</div>
-      </div>
-    </div>
-
-    <!-- Connector 1 -->
-    <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0;padding-bottom:38px;">
-      <div style="font-size:15px;font-weight:800;color:#4f46e5;">46%</div>
-      <svg width="36" height="14" viewBox="0 0 36 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <line x1="0" y1="7" x2="28" y2="7" stroke="#cbd5e1" stroke-width="2"/>
-        <polyline points="20,2 28,7 20,12" stroke="#cbd5e1" stroke-width="2" fill="none" stroke-linejoin="round"/>
-      </svg>
-      <div style="font-size:11px;font-weight:700;color:#64748b;white-space:nowrap;">connect rate</div>
-    </div>
-
-    <!-- Donut 2: Contacts Connected -->
-    <div style="display:flex;flex-direction:column;align-items:center;gap:8px;flex:1;">
-      <svg width="100" height="100" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="70" cy="70" r="52" fill="none" stroke="#dbeafe" stroke-width="12"/>
-        <circle cx="70" cy="70" r="52" fill="none" stroke="#3b82f6" stroke-width="12"
-          stroke-dasharray="150.3 176.4" stroke-linecap="round"
-          transform="rotate(-90 70 70)"/>
-        <text x="70" y="68" text-anchor="middle" fill="#1e293b" font-size="34" font-weight="800" font-family="system-ui,sans-serif">89</text>
-        <text x="70" y="84" text-anchor="middle" fill="#64748b" font-size="12" font-weight="600" font-family="system-ui,sans-serif">Contacts</text>
-      </svg>
-      <div style="text-align:center;">
-        <div style="font-size:13px;font-weight:800;color:#1e293b;">Contacts Connected</div>
-        <div style="font-size:11px;font-weight:600;color:#64748b;margin-top:2px;">of 195 total contacts</div>
-      </div>
-    </div>
-
-    <!-- Connector 2 -->
-    <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0;padding-bottom:38px;">
-      <div style="font-size:15px;font-weight:800;color:#2563eb;">22%</div>
-      <svg width="36" height="14" viewBox="0 0 36 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <line x1="0" y1="7" x2="28" y2="7" stroke="#cbd5e1" stroke-width="2"/>
-        <polyline points="20,2 28,7 20,12" stroke="#cbd5e1" stroke-width="2" fill="none" stroke-linejoin="round"/>
-      </svg>
-      <div style="font-size:11px;font-weight:700;color:#64748b;white-space:nowrap;">total qualified</div>
-    </div>
-
-    <!-- Donut 3: Contacts Qualified -->
-    <div style="display:flex;flex-direction:column;align-items:center;gap:8px;flex:1;">
-      <svg width="100" height="100" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="70" cy="70" r="52" fill="none" stroke="#dcfce7" stroke-width="12"/>
-        <circle cx="70" cy="70" r="52" fill="none" stroke="#22c55e" stroke-width="12"
-          stroke-dasharray="71.9 254.8" stroke-linecap="round"
-          transform="rotate(-90 70 70)"/>
-        <text x="70" y="68" text-anchor="middle" fill="#1e293b" font-size="34" font-weight="800" font-family="system-ui,sans-serif">42</text>
-        <text x="70" y="84" text-anchor="middle" fill="#64748b" font-size="12" font-weight="600" font-family="system-ui,sans-serif">Contacts</text>
-      </svg>
-      <div style="text-align:center;">
-        <div style="font-size:13px;font-weight:800;color:#1e293b;">Contacts Qualified</div>
-        <div style="font-size:11px;font-weight:600;color:#64748b;margin-top:2px;">of 195 total contacts</div>
-      </div>
-    </div>
-
-  </div>
-  <div style="display:flex;align-items:center;margin:12px 28px 0;">
-    <div style="flex:1;height:1px;background:#e2e8f0;"></div>
-    <button id="t4-metrics-btn" onclick="toggleMetrics('t4')" style="display:flex;align-items:center;gap:4px;background:none;border:none;cursor:pointer;color:#94a3b8;font-size:11px;font-weight:600;padding:4px 8px;letter-spacing:.02em;">
-      <span id="t4-metrics-label">Show Breakdown</span>
-      <svg id="t4-metrics-arrow" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="transition:transform .25s;transform:rotate(0deg);"><polyline points="6 9 12 15 18 9"/></svg>
-    </button>
-  </div>
-  <div id="t4-metrics-panel" style="display:none;">
-  <div class="metrics-section" style="padding:14px 28px 16px;">
-    <div style="display:flex;border:1.5px solid #e2e8f0;border-radius:12px;overflow:hidden;background:#fff;box-shadow:0 1px 4px rgba(15,23,42,.06);">
-      <!-- Not Connected Breakdown -->
-      <div style="flex:1;padding:14px 20px;background:#fffcf8;">
-        <div style="display:flex;align-items:center;gap:6px;margin-bottom:11px;padding-bottom:9px;border-bottom:1px solid #fde8c8;">
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="23" y1="1" x2="17" y2="7"/><line x1="17" y1="1" x2="23" y2="7"/><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 011.1 1.18C1.1.6 1.49.1 2.06.1H5.1a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 14.9v2.02z"/></svg>
-          <span style="font-size:10px;font-weight:700;color:#b45309;text-transform:uppercase;letter-spacing:.07em;">Not Connected Breakdown</span>
+  <!-- Top Metrics -->
+  <div style="padding:0 28px;margin-bottom:24px;">
+    <div style="display:flex;align-items:center;gap:12px;padding:20px 24px;overflow-x:auto;background:#fff;border:1.5px solid #e2e8f0;border-radius:12px;">
+      <!-- Total Contacts -->
+      <div style="background:#f8f9fa;border:1.5px solid #e0e3e8;border-radius:12px;padding:20px 24px;position:relative;overflow:hidden;flex:0 0 auto;min-width:170px;">
+        <div style="position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:8px;background:rgba(99,102,241,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
         </div>
-        <div style="display:flex;flex-direction:column;gap:8px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <div style="display:flex;align-items:center;gap:7px;">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
-              <span style="font-size:12.5px;color:#374151;font-weight:500;">Voicemail</span>
-            </div>
-            <div style="display:flex;align-items:center;gap:6px;">
-              <span style="font-size:13px;font-weight:700;color:#0f172a;">31</span>
-              <span style="font-size:11px;font-weight:600;color:#d97706;background:#fef3c7;padding:1px 7px;border-radius:5px;">16%</span>
-            </div>
-          </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <div style="display:flex;align-items:center;gap:7px;">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 011.1 1.18C1.1.6 1.49.1 2.06.1H5.1a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 14.9v2.02z"/><polyline points="22 8 22 2 16 2"/><line x1="22" y1="2" x2="16" y2="8"/></svg>
-              <span style="font-size:12.5px;color:#374151;font-weight:500;">Not Answered</span>
-            </div>
-            <div style="display:flex;align-items:center;gap:6px;">
-              <span style="font-size:13px;font-weight:700;color:#0f172a;">20</span>
-              <span style="font-size:11px;font-weight:600;color:#7c3aed;background:#f5f3ff;padding:1px 7px;border-radius:5px;">10%</span>
-            </div>
-          </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <div style="display:flex;align-items:center;gap:7px;">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
-              <span style="font-size:12.5px;color:#374151;font-weight:500;">Busy</span>
-            </div>
-            <div style="display:flex;align-items:center;gap:6px;">
-              <span style="font-size:13px;font-weight:700;color:#0f172a;">12</span>
-              <span style="font-size:11px;font-weight:600;color:#2563eb;background:#dbeafe;padding:1px 7px;border-radius:5px;">6%</span>
-            </div>
-          </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <div style="display:flex;align-items:center;gap:7px;">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-              <span style="font-size:12.5px;color:#374151;font-weight:500;">Call Failed</span>
-            </div>
-            <div style="display:flex;align-items:center;gap:6px;">
-              <span style="font-size:13px;font-weight:700;color:#0f172a;">4</span>
-              <span style="font-size:11px;font-weight:600;color:#dc2626;background:#fee2e2;padding:1px 7px;border-radius:5px;">2%</span>
-            </div>
-          </div>
-        </div>
+        <div style="font-size:28px;font-weight:900;color:#6366f1;line-height:1;letter-spacing:-.03em;">195</div>
+        <div style="font-size:11px;font-weight:600;color:#a78bfa;margin-top:6px;text-transform:uppercase;letter-spacing:.04em;">Total Contacts</div>
       </div>
-      <div style="width:1px;background:#e2e8f0;flex-shrink:0;"></div>
-      <!-- Connected Breakdown -->
-      <div style="flex:1;padding:14px 20px;background:#f0fdf4;">
-        <div style="display:flex;align-items:center;gap:6px;margin-bottom:11px;padding-bottom:9px;border-bottom:1px solid #bbf7d0;">
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 011.1 1.18C1.1.6 1.49.1 2.06.1H5.1a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 14.9v2.02z"/><path d="M14.5 2.5c1.5 1.5 2.5 3.5 2.5 5.5"/><path d="M17.5 0c2 2 3 4.5 3 7.5"/></svg>
-          <span style="font-size:10px;font-weight:700;color:#047857;text-transform:uppercase;letter-spacing:.07em;">Connected Breakdown</span>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:8px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <div style="display:flex;align-items:center;gap:7px;">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg>
-              <span style="font-size:12.5px;color:#374151;font-weight:500;">Total Connected</span>
-            </div>
-            <div style="display:flex;align-items:center;gap:6px;">
-              <span style="font-size:13px;font-weight:700;color:#059669;">89</span>
-              <span style="font-size:11px;font-weight:600;color:#059669;background:#dcfce7;padding:1px 7px;border-radius:5px;">46%</span>
-            </div>
-          </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <div style="display:flex;align-items:center;gap:7px;">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0891b2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              <span style="font-size:12.5px;color:#374151;font-weight:500;">Avg Call Duration</span>
-            </div>
-            <span style="font-size:13px;font-weight:700;color:#0891b2;">0:48</span>
-          </div>
 
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <div style="display:flex;align-items:center;gap:7px;">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
-              <span style="font-size:12.5px;color:#374151;font-weight:500;">Avg Attempts to Connect</span>
-            </div>
-            <span style="font-size:13px;font-weight:700;color:#6366f1;">1.8 Calls / Contact</span>
-          </div>
+      <!-- Contacts in Queue -->
+      <div style="background:#f5f3ff;border:1.5px solid #e9d5ff;border-radius:12px;padding:20px 24px;position:relative;overflow:hidden;flex:0 0 auto;min-width:170px;">
+        <div style="position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:8px;background:rgba(99,102,241,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
         </div>
+        <div style="font-size:28px;font-weight:900;color:#6366f1;line-height:1;letter-spacing:-.03em;">0</div>
+        <div style="font-size:11px;font-weight:600;color:#a78bfa;margin-top:6px;text-transform:uppercase;letter-spacing:.04em;">Contacts in Queue</div>
+      </div>
+
+      <!-- Contacts Connected -->
+      <div style="background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:12px;padding:20px 24px;position:relative;overflow:hidden;flex:0 0 auto;min-width:170px;">
+        <div style="position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:8px;background:rgba(59,130,246,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 011.1 1.18C1.1.6 1.49.1 2.06.1H5.1a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 14.9v2.02z"/><path d="M14.5 2.5c1.5 1.5 2.5 3.5 2.5 5.5"/><path d="M17.5 0c2 2 3 4.5 3 7.5"/></svg>
+        </div>
+        <div style="font-size:28px;font-weight:900;color:#2563eb;line-height:1;letter-spacing:-.03em;">89 <span style="font-size:14px;color:#60a5fa;font-weight:600;">(46%)</span></div>
+        <div style="font-size:10px;font-weight:700;color:#60a5fa;margin-top:6px;text-transform:uppercase;letter-spacing:.04em;">Connected</div>
+      </div>
+
+      <!-- Contacts Not Connected -->
+      <div onclick="toggleNotConnectedModal()" style="background:#fff9f0;border:1.5px solid #fed7aa;border-radius:12px;padding:20px 24px;position:relative;overflow:hidden;flex:0 0 auto;min-width:170px;cursor:pointer;transition:all .25s;">
+        <div style="position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:8px;background:rgba(217,119,6,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="23" y1="1" x2="17" y2="7"/><line x1="17" y1="1" x2="23" y2="7"/><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81A19.79 19.79 0 011.1 1.18C1.1.6 1.49.1 2.06.1H5.1a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 14.9v2.02z"/></svg>
+        </div>
+        <div style="font-size:28px;font-weight:900;color:#d97706;line-height:1;letter-spacing:-.03em;">106 <span style="font-size:14px;color:#fb923c;font-weight:600;">(54%)</span></div>
+        <div style="font-size:10px;font-weight:700;color:#fb923c;margin-top:8px;text-transform:uppercase;letter-spacing:.04em;display:flex;align-items:center;gap:3px;">
+          Not Connected
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+        <style>
+          div[onclick="toggleNotConnectedModal()"]:hover {
+            background:#fffbf4;
+            border-color:#f59e0b;
+            transform:translateY(-1px);
+          }
+        </style>
+      </div>
+
+      <!-- Goal Achieved -->
+      <div style="background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:12px;padding:20px 24px;position:relative;overflow:hidden;flex:0 0 auto;min-width:170px;">
+        <div style="position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:8px;background:rgba(34,197,94,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        </div>
+        <div style="font-size:28px;font-weight:900;color:#16a34a;line-height:1;letter-spacing:-.03em;">42 <span style="font-size:14px;color:#4ade80;font-weight:600;">(22%)</span></div>
+        <div style="font-size:10px;font-weight:700;color:#4ade80;margin-top:6px;text-transform:uppercase;letter-spacing:.04em;">Goal Achieved</div>
+      </div>
+
+      <!-- Average Call Duration -->
+      <div style="background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:12px;padding:20px 24px;position:relative;overflow:hidden;flex:0 0 auto;min-width:170px;">
+        <div style="position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:8px;background:rgba(34,197,94,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+        </div>
+        <div style="font-size:28px;font-weight:900;color:#16a34a;line-height:1;letter-spacing:-.03em;">0m 48s</div>
+        <div style="font-size:11px;font-weight:600;color:#4ade80;margin-top:6px;text-transform:uppercase;letter-spacing:.04em;">Average Call Duration</div>
+      </div>
+
+      <!-- Avg Attempts per Contact -->
+      <div style="background:#f5f3ff;border:1.5px solid #e9d5ff;border-radius:12px;padding:20px 24px;position:relative;overflow:hidden;flex:0 0 auto;min-width:170px;">
+        <div style="position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:8px;background:rgba(99,102,241,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0118 0 9 9 0 01-18 0"/><path d="M9 11l3 3L22 4"/></svg>
+        </div>
+        <div style="font-size:28px;font-weight:900;color:#6366f1;line-height:1;letter-spacing:-.03em;">1.8x</div>
+        <div style="font-size:11px;font-weight:600;color:#a78bfa;margin-top:6px;text-transform:uppercase;letter-spacing:.04em;">Avg Attempts / Contact</div>
+      </div>
+
+      <!-- Retried (Clickable) -->
+      <div onclick="toggleRetryModal()" style="background:#fff9f0;border:1.5px solid #fb923c;border-radius:12px;padding:20px 24px;position:relative;overflow:hidden;flex:0 0 auto;min-width:170px;cursor:pointer;transition:all .25s;">
+        <div style="position:absolute;top:12px;right:12px;width:28px;height:28px;border-radius:8px;background:rgba(251,146,60,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fb923c" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+        </div>
+        <div style="font-size:28px;font-weight:900;color:#fb923c;line-height:1;letter-spacing:-.03em;">106 <span style="font-size:14px;color:#fb923c;font-weight:600;">(59%)</span></div>
+        <div style="font-size:10px;font-weight:700;color:#fb923c;margin-top:8px;text-transform:uppercase;letter-spacing:.04em;display:flex;align-items:center;gap:3px;">
+          Retried
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fb923c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+        <style>
+          div[onclick="toggleRetryModal()"]:hover {
+            background:#fffbf4;
+            border-color:#f97316;
+            transform:translateY(-1px);
+          }
+        </style>
       </div>
     </div>
   </div>
-  </div><!-- /t4-metrics-panel -->
-  </div><!-- /funnel-section -->
-  </div><!-- /section-card Funnel + Performance -->
 
-  <!-- Contacts Overview -->
 
   <!-- Contacts Overview -->
   <div class="section-card">
@@ -2211,7 +1927,6 @@
         <div class="filter-menu-item" onclick="setFilter('status','','All Statuses','t4ddStatus')">All Statuses</div>
         <div class="filter-menu-divider"></div>
         <div class="filter-menu-item" onclick="setFilter('status','connected','Connected','t4ddStatus')">Connected</div>
-        <div class="filter-menu-item" onclick="setFilter('status','voicemail','Voicemail','t4ddStatus')">Voicemail</div>
         <div class="filter-menu-item" onclick="setFilter('status','busy','Busy','t4ddStatus')">Busy</div>
         <div class="filter-menu-item" onclick="setFilter('status','not-answered','Not Answered','t4ddStatus')">Not Answered</div>
         <div class="filter-menu-item" onclick="setFilter('status','call-failed','Call Failed','t4ddStatus')">Call Failed</div>
@@ -2238,78 +1953,8 @@
     </thead>
     <tbody id="t4contactTableBody">
 
-      <!-- Ellie: VM → VM → Connected (outbound) -->
-      <tr style="cursor:pointer" data-outcome="qualified" data-status="connected" data-timeline="t4-tl-ellie" onclick="toggleTimeline('t4-tl-ellie', this.querySelector('.expand-btn'))">
-        <td>
-          <div class="cust-cell">
-            <div class="cust-avatar av-em">EM</div>
-            <div>
-              <div class="cust-name">Ellie Mayucorp</div>
-              <div class="cust-phone">+17186298584</div>
-              <div style="font-size:11px;color:#9ca3af;margin-top:2px;">Created Feb 1, 2026</div>
-            </div>
-          </div>
-        </td>
-        <td><span class="att-count atc-done">3 / 3 attempts</span></td>
-        <td><div style="font-size:13px;color:#111827;font-weight:500;">Feb 4, 2026</div><div style="font-size:11.5px;color:#9ca3af;">6:10 PM · 1m 25s</div></td>
-        <td><span class="att-chip ac-connected">Connected</span></td>
-        <td><span class="cs-badge cs-qualified">Lead Qualified</span></td>
-        <td>
-          <div class="action-cell">
-            <button class="expand-btn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></button>
-            <div class="kebab-wrap">
-              <button class="kebab-btn" onclick="toggleKebab(this,event)">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
-              </button>
-              <div class="kebab-menu">
-                <button class="kebab-item" onclick="event.stopPropagation()">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-                  View Lead Details
-                </button>
-              </div>
-            </div>
-          </div>
-        </td>
-      </tr>
-      <tr id="t4-tl-ellie" class="timeline-row tl-hidden">
-        <td colspan="6">
-          <div class="timeline-wrap">
-            <div class="tl-heading">Call History</div>
-            <div class="timeline">
-              <div class="tl-event">
-                <div class="tl-dot td-voicemail"></div>
-                <div class="tl-body">
-                  <div class="tl-top"><span class="tl-label">1st Call</span><span class="tl-tag tt-outbound">Outbound</span></div>
-                  <div class="tl-meta">Feb 2, 2026 · 2:10 PM · 0m 22s</div>
-                  <span class="tl-outcome">Voicemail</span>
-                </div>
-              </div>
-              <div class="tl-event">
-                <div class="tl-dot td-voicemail"></div>
-                <div class="tl-body">
-                  <div class="tl-top"><span class="tl-label">1st Retry</span><span class="tl-tag tt-outbound">Outbound</span></div>
-                  <div class="tl-meta">Feb 3, 2026 · 10:00 AM · 0m 18s</div>
-                  <span class="tl-outcome">Voicemail</span>
-                </div>
-              </div>
-              <div class="tl-event">
-                <div class="tl-dot td-connected"></div>
-                <div class="tl-body">
-                  <div class="tl-top"><span class="tl-label">2nd Retry</span><span class="tl-tag tt-outbound">Outbound</span></div>
-                  <div class="tl-meta">Feb 4, 2026 · 6:10 PM · 1m 25s</div>
-                  <span class="tl-outcome">Connected · Follow-up Required</span><br>
-                  <button class="tl-transcript-link" onclick="openTranscript(event,'Ellie Mayucorp','2nd Retry — Feb 4, 2026 · 6:10 PM · 1m 25s')">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-                    View Transcript
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </td>
-      </tr>
-
-      <!-- James: VM → VM → Inbound call (customer called back, cancels retry 2) -->
+      <!-- Priya: Busy → Connected (moved up) -->
+      <!-- James: Inbound call (customer called back) -->
       <tr style="cursor:pointer" data-outcome="qualified" data-status="connected" data-timeline="t4-tl-james" onclick="toggleTimeline('t4-tl-james', this.querySelector('.expand-btn'))">
         <td>
           <div class="cust-cell">
@@ -2348,19 +1993,17 @@
             <div class="tl-heading">Call History</div>
             <div class="timeline">
               <div class="tl-event">
-                <div class="tl-dot td-voicemail"></div>
+                <div class="tl-dot td-connected"></div>
                 <div class="tl-body">
-                  <div class="tl-top"><span class="tl-label">1st Call</span><span class="tl-tag tt-outbound">Outbound</span></div>
+                  <div class="tl-top"><span class="tl-label">Initial Call</span><span class="tl-tag tt-outbound">Outbound</span></div>
                   <div class="tl-meta">Feb 2, 2026 · 2:02 PM · 0m 24s</div>
-                  <span class="tl-outcome">Voicemail</span>
                 </div>
               </div>
               <div class="tl-event">
-                <div class="tl-dot td-voicemail"></div>
+                <div class="tl-dot td-connected"></div>
                 <div class="tl-body">
                   <div class="tl-top"><span class="tl-label">1st Retry</span><span class="tl-tag tt-outbound">Outbound</span></div>
                   <div class="tl-meta">Feb 3, 2026 · 11:00 AM · 0m 20s</div>
-                  <span class="tl-outcome">Voicemail</span>
                 </div>
               </div>
               <div class="tl-event">
@@ -2368,8 +2011,6 @@
                 <div class="tl-body">
                   <div class="tl-top"><span class="tl-label">Customer Called Back</span><span class="tl-tag tt-inbound">↩ Inbound</span></div>
                   <div class="tl-meta">Feb 4, 2026 · 3:45 PM · 2m 10s</div>
-                  <span class="tl-outcome">Connected · Interested — Demo Scheduled</span>
-                  <div class="tl-inbound-note">Retry 2 (scheduled Feb 5) was automatically cancelled when inbound call was received.</div>
                   <button class="tl-transcript-link" onclick="openTranscript(event,'James Patterson','Inbound — Feb 4, 2026 · 3:45 PM · 2m 10s')">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
                     View Transcript
@@ -2422,9 +2063,8 @@
               <div class="tl-event">
                 <div class="tl-dot td-busy"></div>
                 <div class="tl-body">
-                  <div class="tl-top"><span class="tl-label">1st Call</span><span class="tl-tag tt-outbound">Outbound</span></div>
+                  <div class="tl-top"><span class="tl-label">Initial Call</span><span class="tl-tag tt-outbound">Outbound</span></div>
                   <div class="tl-meta">Feb 2, 2026 · 12:02 PM · 0m 5s</div>
-                  <span class="tl-outcome">Busy</span>
                 </div>
               </div>
               <div class="tl-event">
@@ -2432,77 +2072,10 @@
                 <div class="tl-body">
                   <div class="tl-top"><span class="tl-label">1st Retry</span><span class="tl-tag tt-outbound">Outbound</span></div>
                   <div class="tl-meta">Feb 3, 2026 · 2:00 PM · 1m 12s</div>
-                  <span class="tl-outcome">Connected · General Information Shared</span><br>
                   <button class="tl-transcript-link" onclick="openTranscript(event,'Priya Sharma','1st Retry — Feb 3, 2026 · 2:00 PM · 1m 12s')">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
                     View Transcript
                   </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </td>
-      </tr>
-
-      <!-- Rahul: VM → VM → Retry scheduled -->
-      <tr style="cursor:pointer" data-outcome="not-qualified" data-status="voicemail" data-timeline="t4-tl-rahul" onclick="toggleTimeline('t4-tl-rahul', this.querySelector('.expand-btn'))">
-        <td>
-          <div class="cust-cell">
-            <div class="cust-avatar av-u">RV</div>
-            <div>
-              <div class="cust-name">Rahul Verma</div>
-              <div class="cust-phone">+19179156226</div>
-              <div style="font-size:11px;color:#9ca3af;margin-top:2px;">Created Feb 1, 2026</div>
-            </div>
-          </div>
-        </td>
-        <td><span class="att-count atc-pending">2 / 3 attempts</span></td>
-        <td><div style="font-size:13px;color:#111827;font-weight:500;">Feb 3, 2026</div><div style="font-size:11.5px;color:#9ca3af;">10:30 AM · 0m 19s</div></td>
-        <td><span class="att-chip ac-voicemail">Voicemail</span></td>
-        <td><span class="cs-badge cs-not-reached">Not Qualified</span></td>
-        <td>
-          <div class="action-cell">
-            <button class="expand-btn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></button>
-            <div class="kebab-wrap">
-              <button class="kebab-btn" onclick="toggleKebab(this,event)">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
-              </button>
-              <div class="kebab-menu">
-                <button class="kebab-item" onclick="event.stopPropagation()">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-                  View Lead Details
-                </button>
-              </div>
-            </div>
-          </div>
-        </td>
-      </tr>
-      <tr id="t4-tl-rahul" class="timeline-row tl-hidden">
-        <td colspan="6">
-          <div class="timeline-wrap">
-            <div class="tl-heading">Call History</div>
-            <div class="timeline">
-              <div class="tl-event">
-                <div class="tl-dot td-voicemail"></div>
-                <div class="tl-body">
-                  <div class="tl-top"><span class="tl-label">1st Call</span><span class="tl-tag tt-outbound">Outbound</span></div>
-                  <div class="tl-meta">Feb 2, 2026 · 12:02 PM · 0m 22s</div>
-                  <span class="tl-outcome">Voicemail</span>
-                </div>
-              </div>
-              <div class="tl-event">
-                <div class="tl-dot td-voicemail"></div>
-                <div class="tl-body">
-                  <div class="tl-top"><span class="tl-label">1st Retry</span><span class="tl-tag tt-outbound">Outbound</span></div>
-                  <div class="tl-meta">Feb 3, 2026 · 10:30 AM · 0m 19s</div>
-                  <span class="tl-outcome">Voicemail</span>
-                </div>
-              </div>
-              <div class="tl-event">
-                <div class="tl-dot td-pending"></div>
-                <div class="tl-body">
-                  <div class="tl-top"><span class="tl-label">2nd Retry</span><span class="tl-tag tt-pending">Scheduled</span></div>
-                  <div class="tl-meta">Feb 5, 2026 · 11:00 AM</div>
                 </div>
               </div>
             </div>
@@ -2551,73 +2124,9 @@
               <div class="tl-event">
                 <div class="tl-dot td-connected"></div>
                 <div class="tl-body">
-                  <div class="tl-top"><span class="tl-label">1st Call</span><span class="tl-tag tt-outbound">Outbound</span></div>
+                  <div class="tl-top"><span class="tl-label">Initial Call</span><span class="tl-tag tt-outbound">Outbound</span></div>
                   <div class="tl-meta">Feb 1, 2026 · 12:01 PM · 1m 34s</div>
-                  <span class="tl-outcome">Connected · General Information Shared</span><br>
                   <button class="tl-transcript-link" onclick="openTranscript(event,'Dennis','1st Call — Feb 1, 2026 · 12:01 PM · 1m 34s')">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-                    View Transcript
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </td>
-      </tr>
-
-      <!-- Sofia: VM → Connected -->
-      <tr style="cursor:pointer" data-outcome="not-qualified" data-status="connected" data-timeline="t4-tl-sofia" onclick="toggleTimeline('t4-tl-sofia', this.querySelector('.expand-btn'))">
-        <td>
-          <div class="cust-cell">
-            <div class="cust-avatar av-s">SF</div>
-            <div>
-              <div class="cust-name">Sofia</div>
-              <div class="cust-phone">+19299908326</div>
-              <div style="font-size:11px;color:#9ca3af;margin-top:2px;">Created Jan 31, 2026</div>
-            </div>
-          </div>
-        </td>
-        <td><span class="att-count atc-done">2 / 3 attempts</span></td>
-        <td><div style="font-size:13px;color:#111827;font-weight:500;">Feb 1, 2026</div><div style="font-size:11.5px;color:#9ca3af;">12:00 PM · 0m 46s</div></td>
-        <td><span class="att-chip ac-connected">Connected</span></td>
-        <td><span class="cs-badge cs-not-reached">Not Qualified</span></td>
-        <td>
-          <div class="action-cell">
-            <button class="expand-btn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></button>
-            <div class="kebab-wrap">
-              <button class="kebab-btn" onclick="toggleKebab(this,event)">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
-              </button>
-              <div class="kebab-menu">
-                <button class="kebab-item" onclick="event.stopPropagation()">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-                  View Lead Details
-                </button>
-              </div>
-            </div>
-          </div>
-        </td>
-      </tr>
-      <tr id="t4-tl-sofia" class="timeline-row tl-hidden">
-        <td colspan="6">
-          <div class="timeline-wrap">
-            <div class="tl-heading">Call History</div>
-            <div class="timeline">
-              <div class="tl-event">
-                <div class="tl-dot td-voicemail"></div>
-                <div class="tl-body">
-                  <div class="tl-top"><span class="tl-label">1st Call</span><span class="tl-tag tt-outbound">Outbound</span></div>
-                  <div class="tl-meta">Jan 31, 2026 · 9:00 AM · 0m 20s</div>
-                  <span class="tl-outcome">Voicemail</span>
-                </div>
-              </div>
-              <div class="tl-event">
-                <div class="tl-dot td-connected"></div>
-                <div class="tl-body">
-                  <div class="tl-top"><span class="tl-label">1st Retry</span><span class="tl-tag tt-outbound">Outbound</span></div>
-                  <div class="tl-meta">Feb 1, 2026 · 12:00 PM · 0m 46s</div>
-                  <span class="tl-outcome">Connected · Schedule Recall</span><br>
-                  <button class="tl-transcript-link" onclick="openTranscript(event,'Sofia','1st Retry — Feb 1, 2026 · 12:00 PM · 0m 46s')">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
                     View Transcript
                   </button>
@@ -2641,7 +2150,7 @@
           </div>
         </td>
         <td><span class="att-count atc-pending">1 / 3 attempts</span></td>
-        <td><div style="font-size:13px;color:#111827;font-weight:500;">Feb 5, 2026</div><div style="font-size:11.5px;color:#9ca3af;">11:00 AM · 0m 0s</div></td>
+        <td><div style="font-size:13px;color:#111827;font-weight:500;">Feb 5, 2026</div><div style="font-size:11.5px;color:#9ca3af;">11:00 AM</div></td>
         <td><span class="att-chip" style="background:#fff1f2;color:#be123c;border:1px solid #fecdd3;">Call Failed</span></td>
         <td><span class="cs-badge cs-not-reached">Not Qualified</span></td>
         <td>
@@ -2669,8 +2178,8 @@
               <div class="tl-event">
                 <div class="tl-dot" style="background:#ef4444;box-shadow:0 0 0 3px #fee2e2;"></div>
                 <div class="tl-body">
-                  <div class="tl-top"><span class="tl-label">1st Call</span><span class="tl-tag tt-outbound">Outbound</span></div>
-                  <div class="tl-meta">Feb 5, 2026 · 11:00 AM · 0m 0s</div>
+                  <div class="tl-top"><span class="tl-label">Initial Call</span><span class="tl-tag tt-outbound">Outbound</span></div>
+                  <div class="tl-meta">Feb 5, 2026 · 11:00 AM</div>
                   <span class="tl-outcome">Call Failed — Network Error</span>
                 </div>
               </div>
@@ -2728,7 +2237,7 @@
               <div class="tl-event">
                 <div class="tl-dot td-busy"></div>
                 <div class="tl-body">
-                  <div class="tl-top"><span class="tl-label">1st Call</span><span class="tl-tag tt-outbound">Outbound</span></div>
+                  <div class="tl-top"><span class="tl-label">Initial Call</span><span class="tl-tag tt-outbound">Outbound</span></div>
                   <div class="tl-meta">Feb 3, 2026 · 9:00 AM · 0m 4s</div>
                   <span class="tl-outcome">Busy</span>
                 </div>
@@ -2746,7 +2255,6 @@
                 <div class="tl-body">
                   <div class="tl-top"><span class="tl-label">2nd Retry</span><span class="tl-tag tt-outbound">Outbound</span></div>
                   <div class="tl-meta">Feb 5, 2026 · 4:30 PM · 2m 05s</div>
-                  <span class="tl-outcome">Connected · Interested — Brochure Sent</span><br>
                   <button class="tl-transcript-link" onclick="openTranscript(event,'Vikram Singh','2nd Retry — Feb 5, 2026 · 4:30 PM · 2m 05s')">
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
                     View Transcript
@@ -2771,7 +2279,7 @@
           </div>
         </td>
         <td><span class="att-count atc-done">3 / 3 attempts</span></td>
-        <td><div style="font-size:13px;color:#111827;font-weight:500;">Feb 4, 2026</div><div style="font-size:11.5px;color:#9ca3af;">2:00 PM · 0m 0s</div></td>
+        <td><div style="font-size:13px;color:#111827;font-weight:500;">Feb 4, 2026</div><div style="font-size:11.5px;color:#9ca3af;">2:00 PM</div></td>
         <td><span class="att-chip ac-voicemail">Not Answered</span></td>
         <td><span class="cs-badge cs-not-reached">Not Qualified</span></td>
         <td>
@@ -2799,8 +2307,8 @@
               <div class="tl-event">
                 <div class="tl-dot td-voicemail"></div>
                 <div class="tl-body">
-                  <div class="tl-top"><span class="tl-label">1st Call</span><span class="tl-tag tt-outbound">Outbound</span></div>
-                  <div class="tl-meta">Feb 2, 2026 · 10:00 AM · 0m 0s</div>
+                  <div class="tl-top"><span class="tl-label">Initial Call</span><span class="tl-tag tt-outbound">Outbound</span></div>
+                  <div class="tl-meta">Feb 2, 2026 · 10:00 AM</div>
                   <span class="tl-outcome">Not Answered</span>
                 </div>
               </div>
@@ -2808,7 +2316,7 @@
                 <div class="tl-dot td-voicemail"></div>
                 <div class="tl-body">
                   <div class="tl-top"><span class="tl-label">1st Retry</span><span class="tl-tag tt-outbound">Outbound</span></div>
-                  <div class="tl-meta">Feb 3, 2026 · 12:00 PM · 0m 0s</div>
+                  <div class="tl-meta">Feb 3, 2026 · 12:00 PM</div>
                   <span class="tl-outcome">Not Answered</span>
                 </div>
               </div>
@@ -2816,72 +2324,8 @@
                 <div class="tl-dot td-voicemail"></div>
                 <div class="tl-body">
                   <div class="tl-top"><span class="tl-label">2nd Retry</span><span class="tl-tag tt-outbound">Outbound</span></div>
-                  <div class="tl-meta">Feb 4, 2026 · 2:00 PM · 0m 0s</div>
+                  <div class="tl-meta">Feb 4, 2026 · 2:00 PM</div>
                   <span class="tl-outcome">Not Answered — Max retries reached</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </td>
-      </tr>
-
-      <!-- Arjun: Voicemail → Inbound callback -->
-      <tr style="cursor:pointer" data-outcome="qualified" data-status="connected" data-timeline="t4-tl-arjun" onclick="toggleTimeline('t4-tl-arjun', this.querySelector('.expand-btn'))">
-        <td>
-          <div class="cust-cell">
-            <div class="cust-avatar av-u" style="background:#ecfdf5;color:#065f46;">AR</div>
-            <div>
-              <div class="cust-name">Arjun Rao</div>
-              <div class="cust-phone">+91-9123456789</div>
-              <div style="font-size:11px;color:#9ca3af;margin-top:2px;">Created Feb 4, 2026</div>
-            </div>
-          </div>
-        </td>
-        <td><span class="att-count atc-done">1 / 3 attempts</span></td>
-        <td><div style="font-size:13px;color:#111827;font-weight:500;">Feb 5, 2026</div><div style="font-size:11.5px;color:#9ca3af;">9:15 AM · 3m 40s</div></td>
-        <td><div style="display:flex;flex-direction:column;gap:4px;"><span class="att-chip ac-connected">Connected</span><span class="att-chip" style="background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;">↩ Inbound</span></div></td>
-        <td><span class="cs-badge cs-qualified">Lead Qualified</span></td>
-        <td>
-          <div class="action-cell">
-            <button class="expand-btn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg></button>
-            <div class="kebab-wrap">
-              <button class="kebab-btn" onclick="toggleKebab(this,event)">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
-              </button>
-              <div class="kebab-menu">
-                <button class="kebab-item" onclick="event.stopPropagation()">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-                  View Lead Details
-                </button>
-              </div>
-            </div>
-          </div>
-        </td>
-      </tr>
-      <tr id="t4-tl-arjun" class="timeline-row tl-hidden">
-        <td colspan="6">
-          <div class="timeline-wrap">
-            <div class="tl-heading">Call History</div>
-            <div class="timeline">
-              <div class="tl-event">
-                <div class="tl-dot td-voicemail"></div>
-                <div class="tl-body">
-                  <div class="tl-top"><span class="tl-label">1st Call</span><span class="tl-tag tt-outbound">Outbound</span></div>
-                  <div class="tl-meta">Feb 4, 2026 · 3:00 PM · 0m 22s</div>
-                  <span class="tl-outcome">Voicemail</span>
-                </div>
-              </div>
-              <div class="tl-event">
-                <div class="tl-dot td-inbound"></div>
-                <div class="tl-body">
-                  <div class="tl-top"><span class="tl-label">Customer Called Back</span><span class="tl-tag tt-inbound">↩ Inbound</span></div>
-                  <div class="tl-meta">Feb 5, 2026 · 9:15 AM · 3m 40s</div>
-                  <span class="tl-outcome">Connected · Admission Form Requested</span>
-                  <div class="tl-inbound-note">1st Retry (scheduled Feb 6) was automatically cancelled when inbound call was received.</div>
-                  <button class="tl-transcript-link" onclick="openTranscript(event,'Arjun Rao','Inbound — Feb 5, 2026 · 9:15 AM · 3m 40s')">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-                    View Transcript
-                  </button>
                 </div>
               </div>
             </div>
@@ -3028,40 +2472,67 @@
 
         <div class="af-divider"></div>
 
-        <!-- Retry attempts count -->
-        <div class="af-field">
-          <div class="af-section-hdr" style="justify-content:space-between;">
-            <div style="display:flex;align-items:center;gap:8px;">
-              <div class="af-section-dot"></div>
+        <!-- Retry Configuration Options (Scheduled & Immediate) -->
+        <div class="af-field" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;grid-column:1/-1;">
+          <!-- Scheduled Retries Box -->
+          <div style="border:1.5px solid #e2e8f0;border-radius:12px;padding:20px;background:#fff;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
               <div>
-                <div class="af-section-title">Call Retry Configuration</div>
-                <div class="af-section-sub">Number of retry attempts</div>
+                <div style="font-size:14px;font-weight:700;color:#0f172a;">Scheduled Retries</div>
+                <p style="font-size:12px;color:#64748b;margin-top:2px;margin-bottom:0;">Retry calls at specific times</p>
+              </div>
+              <label class="toggle"><input type="checkbox" id="t3RetryToggle" checked onchange="t3OnRetryToggle(this.checked)"/><span class="slider"></span></label>
+            </div>
+            <div class="retry-body" id="t3RetryBody" style="margin-top:14px;">
+              <p class="count-label">Number of retry attempts</p>
+              <div class="count-row">
+                <div class="count-pill" onclick="t3SelectCount(1,this)">1</div>
+                <div class="count-pill active" onclick="t3SelectCount(2,this)">2</div>
+                <div class="count-pill" onclick="t3SelectCount(3,this)">3</div>
+                <div class="count-pill" onclick="t3SelectCount(4,this)">4</div>
+                <div class="count-pill" onclick="t3SelectCount(5,this)">5</div>
+              </div>
+              <p class="max-note">Max 5 retries per lead per automation run.</p>
+              <div class="retry-cards" id="t3RetryCards"></div>
+              <div class="info-callout">
+                <span style="flex-shrink:0">&#9432;</span>
+                <span>If the lead picks up on <strong>any</strong> retry, all subsequent retries are automatically cancelled. Retries must be scheduled between <strong>9:00 AM – 9:00 PM</strong>.</span>
+              </div>
+              <div class="info-callout" style="background:#fef3c7;border-color:#fcd34d;color:#92400e;margin-top:10px;">
+                <span style="flex-shrink:0">⚠</span>
+                <span>Retry timing depends on your call queue capacity. Higher call volumes may cause delays in executing retries at scheduled times. To minimize delays and ensure precise retry timing, consider upgrading your concurrent call channels.</span>
               </div>
             </div>
-            <label class="af-toggle">
-              <input type="checkbox" id="t3RetryToggle" checked onchange="t3ToggleRetry(this)">
-              <span class="af-toggle-label" id="t3RetryToggleLabel">On</span>
-              <div class="af-toggle-track"><div class="af-toggle-thumb"></div></div>
-            </label>
           </div>
-          <div id="t3RetrySection">
-          <div class="af-pill-row" style="margin-top:8px;">
-            <div class="af-pill" onclick="t3SelectCount(1,this)">1</div>
-            <div class="af-pill active" onclick="t3SelectCount(2,this)">2</div>
-            <div class="af-pill" onclick="t3SelectCount(3,this)">3</div>
-            <div class="af-pill" onclick="t3SelectCount(4,this)">4</div>
-            <div class="af-pill" onclick="t3SelectCount(5,this)">5</div>
-          </div>
-          </div>
-        </div>
 
-        <!-- Retry timing cards -->
-        <div class="af-field" id="t3RetryTimingSection">
-          <div class="af-section-sub" style="margin-bottom:8px;">Retry attempt timings</div>
-          <div class="af-retry-cards" id="t3RetryCards"></div>
-          <div class="info-callout" style="margin-top:10px;">
-            <span style="flex-shrink:0">&#9432;</span>
-            <span>If the lead picks up on <strong>any</strong> retry, all subsequent retries are automatically cancelled. Retries must be scheduled between <strong>9:00 AM – 9:00 PM</strong>.</span>
+          <!-- Immediate Retries Box -->
+          <div style="border:1.5px solid #e2e8f0;border-radius:12px;padding:20px;background:#fff;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+              <div>
+                <div style="font-size:14px;font-weight:700;color:#0f172a;">Immediate Retries</div>
+                <p style="font-size:12px;color:#64748b;margin-top:2px;margin-bottom:0;">Call back-to-back instantly</p>
+              </div>
+              <label class="toggle"><input type="checkbox" id="t3ImmediateRetryToggle" onchange="t3OnImmediateRetryToggle(this.checked)"/><span class="slider"></span></label>
+            </div>
+            <div class="retry-body hidden" id="t3ImmediateRetryBody" style="margin-top:14px;">
+              <p class="count-label">Number of immediate retries</p>
+              <div class="count-row">
+                <div class="count-pill" onclick="t3SelectImmediateCount(1,this)">1</div>
+                <div class="count-pill active" onclick="t3SelectImmediateCount(2,this)">2</div>
+                <div class="count-pill" onclick="t3SelectImmediateCount(3,this)">3</div>
+                <div class="count-pill" onclick="t3SelectImmediateCount(4,this)">4</div>
+                <div class="count-pill" onclick="t3SelectImmediateCount(5,this)">5</div>
+              </div>
+              <p class="max-note">Max 5 immediate retries per lead.</p>
+              <div class="info-callout" style="background:#f0fdf4;border-color:#bbf7d0;">
+                <span style="flex-shrink:0;">&#9432;</span>
+                <span>The lead will receive <strong id="t3ImmediateRetryLabel">2</strong> calls <strong>back-to-back</strong> until they pick up or all attempts are exhausted.</span>
+              </div>
+              <div class="info-callout" style="background:#fef3c7;border-color:#fcd34d;color:#92400e;margin-top:10px;">
+                <span style="flex-shrink:0">⚠</span>
+                <span>Immediate retry execution depends on your call queue capacity. Higher call volumes may cause delays between back-to-back calls. To ensure rapid successive calls and better execution efficiency, consider upgrading your concurrent call channels.</span>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -3427,8 +2898,47 @@
     }
     return{valid:true,scheduledLabel:`${s.val} ${s.unit} after ${i===0?'initial call':ordinal(i)+' Retry'}`,msg:''};
   }
-  function onRetryToggle(en){retryEnabled=en;document.getElementById('retryBody').classList.toggle('hidden',!en);if(en)rebuildCards();updateStartBtn();}
-  function selectCount(n,el){currentCount=n;document.querySelectorAll('.count-pill').forEach(p=>p.classList.remove('active'));el.classList.add('active');rebuildCards();}
+  let immediateRetryEnabled=false,immediateRetryCount=2;
+  function onRetryToggle(en){
+    retryEnabled=en;
+    document.getElementById('retryBody').classList.toggle('hidden',!en);
+    if(en){
+      immediateRetryEnabled=false;
+      document.getElementById('immediateRetryToggle').checked=false;
+      document.getElementById('immediateRetryBody').classList.add('hidden');
+    }
+    if(en)rebuildCards();
+    updateStartBtn();
+  }
+  function selectCount(n,el){currentCount=n;document.querySelectorAll('#retryBody .count-pill').forEach(p=>p.classList.remove('active'));el.classList.add('active');rebuildCards();}
+  function onImmediateRetryToggle(en){
+    immediateRetryEnabled=en;
+    document.getElementById('immediateRetryBody').classList.toggle('hidden',!en);
+    if(en){
+      retryEnabled=false;
+      document.getElementById('retryToggle').checked=false;
+      document.getElementById('retryCards').innerHTML='';
+      document.getElementById('retryBody').classList.add('hidden');
+    }
+    updateStartBtn();
+  }
+  function selectImmediateCount(n,el){immediateRetryCount=n;document.getElementById('immediateRetryLabel').textContent=n;document.querySelectorAll('#immediateRetryBody .count-pill').forEach(p=>p.classList.remove('active'));el.classList.add('active');}
+  function t3OnRetryToggle(en){
+    document.getElementById('t3RetryBody').classList.toggle('hidden',!en);
+    if(en){
+      document.getElementById('t3ImmediateRetryToggle').checked=false;
+      document.getElementById('t3ImmediateRetryBody').classList.add('hidden');
+    }
+  }
+  function t3SelectCount(n,el){document.querySelectorAll('#t3RetryBody .count-pill').forEach(p=>p.classList.remove('active'));el.classList.add('active');}
+  function t3OnImmediateRetryToggle(en){
+    document.getElementById('t3ImmediateRetryBody').classList.toggle('hidden',!en);
+    if(en){
+      document.getElementById('t3RetryToggle').checked=false;
+      document.getElementById('t3RetryBody').classList.add('hidden');
+    }
+  }
+  function t3SelectImmediateCount(n,el){document.getElementById('t3ImmediateRetryLabel').textContent=n;document.querySelectorAll('#t3ImmediateRetryBody .count-pill').forEach(p=>p.classList.remove('active'));el.classList.add('active');}
   function rebuildCards(){
     const c=document.getElementById('retryCards');c.innerHTML='';
     for(let i=0;i<currentCount;i++){
