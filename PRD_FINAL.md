@@ -1,8 +1,7 @@
 # Product Requirements Document: LPU Campaign Deployment with Automated Retries
 
 **Version:** 1.0  
-**Date:** April 28, 2026  
-**Status:** In Development  
+**Date:** April 28, 2026    
 **Prototype:** https://lpu-campaign-deploynew.vercel.app/
 
 ---
@@ -44,17 +43,17 @@ More connections → Higher conversion rates → Increased METS consumption → 
 
 | ID | Requirement | Details |
 |---|---|---|
-| FR1 | Agent Selection | Users must select an active calling agent before campaign creation |
-| FR2 | Campaign Naming | Campaign must have a unique, descriptive name |
-| FR3 | Campaign Type | Support Outbound, Inbound, and Blended campaign types |
-| FR4 | Retry Toggle | Users can enable/disable retries (default: ON) |
+| FR1 | Agent Selection | Users must select an active calling agent before campaign creation (Mandatory) |
+| FR2 | Campaign Naming | Campaign must have a unique, descriptive name (Mandatory) |
+| FR3 | Campaign Type | Support Outbound, Inbound, and Blended campaign types (Mandatory) |
+| FR4 | Retry Toggle | Users can enable/disable retries (default: ON for immideate retry) |
 | FR5 | Default Retry Type | Default configured as Immediate Retries (2 attempts) |
 | FR6 | Retry Type Selection | Support two mutually exclusive retry types: Scheduled and Immediate |
 | FR7 | Retry Count | Allow 1-5 retry attempts for both retry types |
-| FR8 | Scheduled Retry Timing | Allow configuration of retry times (hours-based or day+time) |
+| FR8 | Scheduled Retry Timing | Allow configuration of retry times (hours-based or day+time) by default set to 2, first retry after 30 minutes of initial call and second retry next day at 1 PM |
 | FR9 | Immediate Retry Config | No timing configuration needed; back-to-back calling |
-| FR10 | Allowed Calling Window | Validate retry times against agent's allowed calling hours |
-| FR11 | Retry Rescheduling | If retry falls outside allowed window, auto-reschedule to next valid slot |
+| FR10 | Allowed Calling Window | Validate retry times against agent's allowed calling hours for day time selection, no need to validate for hours based retry scheduling |
+| FR11 | Retry Rescheduling | If retry falls outside allowed window, auto-reschedule to next earliest available and valid slot, in most cases it will be 9 AM |
 | FR12 | Test Call | Ability to trigger test call or skip before campaign launch |
 | FR13 | Campaign Launch | Start campaign with one click; redirect to Running Campaign UI |
 
@@ -64,32 +63,28 @@ More connections → Higher conversion rates → Increased METS consumption → 
 |---|---|---|
 | FR14 | Real-time Metrics | Display 8 key metrics with real-time updates: Total Contacts, Contacts in Queue, Connected, Not Connected, Goal Achieved, Avg Call Duration, Avg Attempts/Contact, Retried |
 | FR15 | Clickable Metrics | "Not Connected" and "Retried" cards are clickable, opening detailed modals |
-| FR16 | Not Connected Modal | Show breakdown with color-coded items: Not Answered, Busy, Call Failed |
-| FR17 | Retry Modal | Show retry status (Exhausted/Scheduled) and call attempts breakdown |
+| FR16 | Not Connected Modal | Show breakdown with color-coded items: Not Answered, Busy, Call Failed or any other possible status received from Vendor |
+| FR17 | Retry Modal | Show retry status (Exhausted/Scheduled) and call attempts breakdown - Initial, Retry 1, Retry 2, Retry 3 |
 | FR18 | Lead Table | Display all leads with columns: Attempts, Last Status, Last Contact Time, Outcome, Inbound Indicator, Retry Attempts Left |
 | FR19 | Lead Expandable Rows | Expand lead row to show attempt-level details (Initial Call, Retry 1, Retry 2...Retry N) |
 | FR20 | Attempt-Level Details | Per attempt show: Status, Timestamp, Duration |
-| FR21 | Transcription Access | Each attempt has link to transcription modal |
+| FR21 | Call Details Access | Each attempt has link to "View Transcription" modal, change the hyperlink that shows "View Transcription to View Call Details" and open the existing modal which is being used currently in the Timeline under the leads Manager |
 | FR22 | Timeline View | Show all call attempts, retry events, and final outcome |
 
-### 4.3 Transcription & Call Analysis
+### 4.3 Transcription, recording, summary & Call Analysis
 
 | ID | Requirement | Details |
 |---|---|---|
-| FR23 | Recording Playback | In-app audio player for call recordings |
-| FR24 | Full Transcript | Display complete call transcription |
+| FR23 | Recording Playback | Current supported UI |
+| FR24 | Full Transcript | Current Supported UI |
 | FR25 | AI Summary | Show AI-generated call summary for connected calls |
-| FR26 | Call Duration | Display call duration in modal |
-| FR27 | Action Items | Show extracted action items from call |
-| FR28 | Outcome Tags | Show call outcome and call status |
 
 ### 4.4 Completed Campaign UI
 
 | ID | Requirement | Details |
 |---|---|---|
 | FR29 | Final Metrics | Display same 8 metrics as running campaign (adjusted for final state) |
-| FR30 | Static Funnel | Show final funnel: Total → Connected → Qualified |
-| FR31 | Final Lead Table | Show all leads with final status and outcomes |
+| FR30 | Final Lead Table | Show all leads with final status and outcomes |
 | FR32 | Lead Timeline Access | Expandable leads with full attempt history |
 | FR33 | Data Export | CSV/Excel export of campaign results |
 
@@ -106,11 +101,11 @@ More connections → Higher conversion rates → Increased METS consumption → 
 
 | ID | Requirement | Details |
 |---|---|---|
-| FR38 | Retry Triggering | Automatically trigger retries for non-connected calls |
+| FR38 | Retry Triggering | Automatically trigger retries for non-connected calls - EXCEPT Voicemails and Calls that were marked failed by the cron due to no pingback receival. |
 | FR39 | Retry Stopping | Stop retries immediately upon connection (outbound or inbound) |
 | FR40 | Retry Limits | Respect configured retry attempt limits (1-5) |
-| FR41 | Inbound Handling | If lead calls back inbound, mark as connected and cancel remaining retries |
-| FR42 | Pingback Failure | If no pingback for >3 days, mark as failed and do NOT retry |
+| FR41 | Inbound Handling | If lead calls back inbound until the campaign is completed, mark as connected and cancel remaining retries, if the lead made an inbound call after all the campaign has ended then there is no need to mark it as connected contact because campaign has already ended, but for the existing job id that handles the inbound calls for that account it will still be going there, no change to that. |
+| FR42 | Pingback Failure | If no pingback for >3 days or the day configured in the cron, mark as failed and do NOT retry |
 
 ### 4.7 METS Billing
 
@@ -119,11 +114,11 @@ More connections → Higher conversion rates → Increased METS consumption → 
 | FR43 | Deduction on Initial | METS deducted once on initial call (Pending state) |
 | FR44 | No Retry Deduction | No additional METS deducted during retry attempts |
 | FR45 | No Mid-Retry Reversal | METS not reversed during intermediate retries |
-| FR46 | Connection Retention | If lead connects (outbound or inbound), retain METS |
+| FR46 | Connection Retention | If lead connects (outbound or inbound) until the campaign is running, retain METS |
 | FR47 | Duration Charges | Additional METS charged if call duration exceeds base METS allocation |
 | FR48 | Exhaustion Reversal | If all retries exhausted with NO connection, reverse METS once |
-| FR49 | Voicemail Handling | Voicemail counts as non-connected; retries continue |
-| FR50 | Billing Transparency | Show METS deduction/reversal status in campaign UI |
+| FR49 | Voicemail Handling | Voicemail is marked as connected in the system so retries will not be made on voicemail calls |
+| FR50 | Billing Transparency | Show METS deduction/reversal status |
 
 ---
 
@@ -324,21 +319,19 @@ AC14.4 Timeline shows attempt sequence
 AC14.5 Expandable row shows transcription link per attempt
 ```
 
-**US15: Access Call Transcription**
+**US15: Access Call Details**
 ```
 As a campaign manager,
 I want to click on an attempt to see the call details,
 So that I can review what was discussed.
 
 Acceptance Criteria:
-AC15.1 Transcription link available in expanded lead row
+AC15.1 Call details link available in expanded lead row
 AC15.2 Modal opens with call details
 AC15.3 Audio player embedded in modal (not new tab)
 AC15.4 Shows full transcript text
 AC15.5 Shows AI summary for connected calls
-AC15.6 Shows extracted action items
-AC15.7 Shows call duration and outcome tags
-AC15.8 Modal has 20px rounded corners
+
 ```
 
 ### 5.3 Retry Logic
@@ -351,7 +344,7 @@ So that we maximize connection chances.
 
 Acceptance Criteria:
 AC16.1 Retries triggered only for: Not Answered, Busy, Call Failed
-AC16.2 Retries NOT triggered for: Connected, Inbound, Voicemail (removed)
+AC16.2 Retries NOT triggered for: Connected, Inbound, Voicemail , system marked failed calls
 AC16.3 Retry scheduled based on configured timing (Scheduled or Immediate)
 AC16.4 Retry does not trigger if max attempts reached
 AC16.5 Retry job created in backend system
@@ -365,7 +358,7 @@ So that we don't spam leads.
 
 Acceptance Criteria:
 AC17.1 When lead answers outbound call, remaining retries cancelled immediately
-AC17.2 When lead calls back (inbound), remaining retries cancelled
+AC17.2 When lead calls back (inbound) until the campaign is functional, remaining retries cancelled
 AC17.3 Lead marked as "Connected" in system
 AC17.4 No retry jobs created after connection
 ```
@@ -404,9 +397,8 @@ I want to mark calls as failed if no status update received,
 So that we don't retry indefinitely.
 
 Acceptance Criteria:
-AC20.1 If no pingback for >3 days, mark call as "Failed"
-AC20.2 Do NOT retry failed calls
-AC20.3 Failed calls excluded from campaign metrics
+AC20.1 If no pingback for >3 days or the day configured in the cron, mark call as "Failed"
+AC20.2 Do NOT retry  system marked failed calls
 ```
 
 ### 5.4 METS Billing
@@ -420,8 +412,8 @@ So that billing reflects outreach effort.
 Acceptance Criteria:
 AC21.1 METS deducted when lead moved to Pending (initial call placed)
 AC21.2 Deducted exactly once per lead, regardless of call outcome
-AC21.3 Amount deducted based on campaign type and agent configuration
-AC21.4 User sees METS deduction in campaign info bar
+AC21.3 Amount deducted based on campaign type and agent configuration for CPM.
+
 ```
 
 **US22: No METS Deduction for Retries**
@@ -463,18 +455,6 @@ AC24.3 Additional charge calculated per configured increment
 AC24.4 Shown in campaign metrics as "Duration-based charges"
 ```
 
-**US25: Transparent METS Breakdown**
-```
-As a campaign manager,
-I want to see METS breakdown in campaign UI,
-So that I understand billing.
-
-Acceptance Criteria:
-AC25.1 Info bar shows: "Approx Cost: X METS"
-AC25.2 Shows initial deduction and any additional charges
-AC25.3 Shows METS available remaining
-AC25.4 Tooltip explains deduction logic
-```
 
 ### 5.5 Automation Integration
 
@@ -532,19 +512,7 @@ AC29.1 Tab 4 shows campaign with "Campaign Completed" status
 AC29.2 Displays same 8 metrics as running campaign (final values)
 AC29.3 Contacts in Queue shows 0 (no pending)
 AC29.4 Connected and Not Connected show final counts and %
-```
-
-**US30: View Final Funnel**
-```
-As a campaign manager,
-I want to see static funnel of campaign results,
-So that I understand conversion progression.
-
-Acceptance Criteria:
-AC30.1 Funnel shows: Total Contacts → Connected → Qualified
-AC30.2 Each stage shows count and percentage of previous stage
-AC30.3 Visual representation of drop-off
-AC30.4 Professional styling with gradients
+AC29.5 Shows completed status with start and end date
 ```
 
 **US31: Export Campaign Data**
@@ -599,35 +567,6 @@ AC31.5 File includes campaign metadata (name, dates, etc.)
 | **Custom Reporting Dashboards** | Static reports sufficient for MVP |
 | **Lead Suppression Lists** | Manual lead list management sufficient |
 | **A/B Testing Campaigns** | Sequential campaigns sufficient for MVP |
-
----
-
-## 8. IMPLEMENTATION STATUS SUMMARY
-
-### ✅ COMPLETE
-- Campaign Setup UI (Step 1, 2, 3)
-- Dual Retry Configuration (Scheduled + Immediate)
-- Running Campaign Metrics (8 cards)
-- Not Connected & Retry Modals
-- Transcription Modal UI
-- Automation Node Retry Config
-- Lead Table Basic Structure
-
-### ⚠️ PARTIAL / NEEDS VERIFICATION
-- METS Billing Logic (UI present, backend status unclear)
-- Lead Drill-down (UI ready, no data binding)
-- Completed Campaign UI (metrics present, other features missing)
-- Retry Engine (UI ready, backend integration needed)
-- Agent Calling Window Integration (needs verification)
-- Test Call Feature (needs trigger confirmation)
-
-### 🔴 NOT YET DONE
-- Completed Campaign Funnel Visualization
-- CSV/Excel Export
-- Retry Rescheduling Logic
-- Pingback Failure Handling
-- METS Reversal Logic
-- Full Lead Timeline in Completed Campaign
 
 ---
 
